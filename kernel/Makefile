@@ -2,6 +2,8 @@ AS_OBJS = \
 	arch/arm/start.o
 
 CXX_OBJS = \
+    arch/abi/cxa_pure.o \
+	arch/arm/cpu.o \
 	init.o
 
 ASM=arm-none-eabi-as
@@ -11,7 +13,9 @@ LD=arm-none-eabi-ld
 
 CXXFLAGS += -std=c++14 -Wall -Wextra -Wold-style-cast
 CXXFLAGS += -ffreestanding -march=armv7-a -mcpu=cortex-a15
-ASFLAGS += -march=armv8-a
+CXXFLAGS += -fno-exceptions -fno-rtti -fno-stack-protector
+CXXFLAGS += -I./
+ASFLAGS +=
 LDFLAGS += -Ttext 0x100000 -T linker.ld -nostdlib
 
 ELF_IMAGE=kernel.elf
@@ -25,4 +29,8 @@ ELF_IMAGE : $(CXX_OBJS) $(AS_OBJS)
 .s.o:
 	@echo "AS $@"; $(CC) $(ASFLAGS) -o $@ -c $<
 
+clean:
+	rm $(CXX_OBJS)
+	rm $(AS_OBJS)
+	rm $(ELF_IMAGE)
 
