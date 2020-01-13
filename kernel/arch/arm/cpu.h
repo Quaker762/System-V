@@ -9,6 +9,7 @@
 {
     __asm__ volatile("cpsid iaf");  // Disable all interrupts (IRQ, FIQ and **)
     __asm__ volatile("wfi");        // Wait for an interrupt (which can never happen!)
+    for(;;);
 }
 
 // A clever trick from Serenity OS. 
