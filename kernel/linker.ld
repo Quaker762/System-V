@@ -9,6 +9,7 @@ SECTIONS {
         *(.text.boot)
         start_of_kernel_text = .;
 		*(.text)
+        *(.text.*)
         end_of_kernel_text = .;
     }
 
