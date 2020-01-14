@@ -6,8 +6,9 @@ SECTIONS {
 
     .text BLOCK(4K) : ALIGN(4K)
     {
-        *(.text.boot)
         start_of_kernel_text = .;
+        *(.text.boot)
+        *(.text.vector_table)
 		*(.text)
         *(.text.*)
         end_of_kernel_text = .;
