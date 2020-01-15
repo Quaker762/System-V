@@ -1,5 +1,6 @@
 AS_OBJS = \
-	arch/arm/start.o
+	arch/arm/start.o \
+    arch/arm/exception.o
 
 CXX_OBJS = \
     arch/abi/cxa_pure.o \
