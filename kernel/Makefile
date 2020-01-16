@@ -23,7 +23,7 @@ LDFLAGS += -Ttext 0x100000 -T linker.ld -nostdlib
 ELF_IMAGE=kernel.elf
 
 ELF_IMAGE : $(CXX_OBJS) $(AS_OBJS)
-	$(LD) $(LDFLAGS) $(CXX_OBJS) $(AS_OBJS) -o $(ELF_IMAGE)
+	@echo "LINK $@"; $(LD) $(LDFLAGS) $(CXX_OBJS) $(AS_OBJS) -o $(ELF_IMAGE)
 
 .cpp.o:
 	@echo "CXX $@"; $(CXX) $(CXXFLAGS) -o $@ -c $<
