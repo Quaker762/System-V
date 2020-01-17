@@ -5,6 +5,7 @@ AS_OBJS = \
 CXX_OBJS = \
     arch/abi/cxa_pure.o \
 	arch/arm/cpu.o \
+	device/uart.o \
 	init.o
 
 ASM=arm-none-eabi-as
