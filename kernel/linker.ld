@@ -29,6 +29,8 @@ SECTIONS {
         *(.bss.COMMON)
     }
 
+    .= 0x40000000;
+    RAM_START = .;
     STACK_BASE = .;
     . += 0x100000;
     STACK_TOP = .;
