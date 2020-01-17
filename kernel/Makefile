@@ -16,6 +16,7 @@ CXXFLAGS += -std=c++14 -Wall -Wextra -Werror -Wold-style-cast
 CXXFLAGS += -ffreestanding -march=armv7ve -mcpu=cortex-a15
 CXXFLAGS += -fno-exceptions -fno-rtti -fno-stack-protector
 CXXFLAGS += -I./
+CXXFLAGS += -I../
 CXXFLAGS += -DKERNEL
 ASFLAGS +=
 LDFLAGS += -Ttext 0x100000 -T linker.ld -nostdlib
