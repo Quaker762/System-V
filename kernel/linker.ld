@@ -19,6 +19,7 @@ SECTIONS {
         *(.rodata)
     }
 
+    .= 0x40000000;
     .data BLOCK(4K) : ALIGN(4K)
     {
         *(.data)
@@ -29,7 +30,6 @@ SECTIONS {
         *(.bss.COMMON)
     }
 
-    .= 0x40000000;
     RAM_START = .;
     STACK_BASE = .;
     . += 0x100000;
