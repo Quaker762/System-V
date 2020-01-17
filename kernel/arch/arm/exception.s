@@ -16,12 +16,20 @@ vector_table:
 **/
 .section .text.vector_table
 .global vector_table
+.align 8
 vector_table:
-    .long 0
-    .long 0
-    .long 0
-    .long 0
-    .long 0
-    .long 0
-    .long 0
-    .long 0
+    b .
+    b .
+    b .
+    b .
+    b .
+    b .
+    b .
+    b .
+
+.global relocate_vector_table
+.section .text
+relocate_vector_table:
+    ldr r0, =vector_table
+    mcr p15, 0, r0, c12, c0, 0
+    bx lr

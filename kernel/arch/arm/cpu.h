@@ -33,6 +33,8 @@ public:
     }
 };
 
+extern "C" void relocate_vector_table();
+
 class CPUID
 {
 public:
