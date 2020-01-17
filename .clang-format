@@ -1,4 +1,4 @@
-ccessModifierOffset: '-4'
+AccessModifierOffset: '-4'
 AlignEscapedNewlines: Left
 AlignTrailingComments: 'true'
 AllowAllArgumentsOnNextLine: 'false'
