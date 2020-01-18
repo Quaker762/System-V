@@ -51,7 +51,7 @@ public:
     void enable() const;
 
     uint16_t flags_register() const { return *reinterpret_cast<volatile uint32_t*>(m_base_address + UARTCR); }
-    uint16_t control_register() const { return *reinterpret_cast<volatile uint32_t*>(m_base_address + UARTTFR);}
+    uint16_t control_register() const { return *reinterpret_cast<volatile uint32_t*>(m_base_address + UARTTFR); }
 
 private:
     void write_character(char) const;
