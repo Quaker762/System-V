@@ -4,6 +4,7 @@ AS_OBJS = \
 
 CXX_OBJS = \
     arch/abi/cxa_pure.o \
+	arch/abi/cxa_global.o \
 	arch/arm/cpu.o \
 	kstdlib/kstring.o \
 	device/uart.o \

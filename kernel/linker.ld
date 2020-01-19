@@ -14,6 +14,14 @@ SECTIONS {
         end_of_kernel_text = .;
     }
 
+    . = ALIGN(4);
+    .init_array :
+    {
+        __init_array_start = .;
+        KEEP (*(.init_array*))
+        __init_array_end = .;
+    }
+
     .rodata BLOCK(4K) : ALIGN(4K)
     {
         *(.rodata)
