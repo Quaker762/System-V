@@ -34,6 +34,7 @@ public:
 };
 
 extern "C" void relocate_vector_table();
+extern "C" void* vector_table;
 
 class CPUID
 {

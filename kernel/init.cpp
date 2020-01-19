@@ -8,12 +8,17 @@
 #include "arch/arm/cpu.h"
 #include <kernel/device/uart.h>
 
+#include <kernel/kstdlib/kstdio.h>
+#include <kernel/assertions.h>
 
 extern "C" void init()
 {
+    kprintf("Starting System-V...\n");
+
+    // Relocate the vector table
+    kprintf("Relocating vector table to 0x%x...", reinterpret_cast<uint32_t>(&vector_table));
     relocate_vector_table();
-    UART uart0(UART0_BASE);
-    uart0.write_string("Hello, World!\n\r\0");
-    uart0.write_string("Wow! UART0 works!\n\r\0");
+
+    kprintf("entering hang...system halted");
     for(;;){}
 }
