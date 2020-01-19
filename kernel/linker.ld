@@ -2,7 +2,7 @@ ENTRY(_start)
 
 SECTIONS {
 
-    . = 0x80010000;
+    . = 0x100000;
 
     .text BLOCK(4K) : ALIGN(4K)
     {
@@ -30,8 +30,8 @@ SECTIONS {
         *(.bss.COMMON)
     }
 
-    RAM_START = .;
-    STACK_BASE = .;
+    __RAM_BASE_ADDRESS = .;
+    __STACK_BASE = .;
     . += 0x100000;
-    STACK_TOP = .;
+    __STACK_TOP = .;
 }

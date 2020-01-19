@@ -21,7 +21,7 @@ CXXFLAGS += -I./
 CXXFLAGS += -I../
 CXXFLAGS += -DKERNEL
 ASFLAGS +=
-LDFLAGS += -Ttext 0x100000 -T linker.ld -nostdlib
+LDFLAGS += -T linker.ld -nostdlib
 
 ELF_IMAGE=kernel.elf
 
