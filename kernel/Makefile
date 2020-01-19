@@ -15,6 +15,7 @@ LD=arm-none-eabi-ld
 
 CXXFLAGS += -std=c++14 -Wall -Wextra -Werror -Wold-style-cast
 CXXFLAGS += -ffreestanding -march=armv7ve -mcpu=cortex-a15
+CXXFLAGS += -Os -g3
 CXXFLAGS += -fno-exceptions -fno-rtti -fno-stack-protector
 CXXFLAGS += -I./
 CXXFLAGS += -I../
