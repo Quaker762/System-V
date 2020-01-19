@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "kprintf.cpp"
+int kprintf(const char* fmt, ...);
 
 #ifdef KERNEL
     #define printf kprintf
