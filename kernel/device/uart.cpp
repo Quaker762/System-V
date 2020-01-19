@@ -26,3 +26,13 @@ void UART::write_string(const char* string) const
     while(*string)
         write_character(*string++);
 }
+
+void UART::puts(const char* string) const
+{
+    write_string(string);
+}
+
+void UART::putc(char character) const
+{
+    write_character(character);
+}

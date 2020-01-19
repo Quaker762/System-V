@@ -45,7 +45,8 @@ class UART
 public:
     UART(uint32_t base_address);
 
-    void write_string(const char*) const;
+    void puts(const char*) const;
+    void putc(char) const;
     void clear_errors() const;
     void disable() const;
     void enable() const;
@@ -56,6 +57,7 @@ public:
 private:
     void write_character(char) const;
     void write_byte(uint8_t) const;
+    void write_string(const char*) const;
 
 private:
     uint32_t m_base_address { 0 };
