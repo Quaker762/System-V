@@ -1,0 +1,20 @@
+{
+    "env": {
+      "myDefaultIncludePath": ["${workspaceFolder}", "${workspaceFolder}/kernel/"],
+    },
+    "configurations": [
+      {
+        "includePath": ["${workspaceFolder}", "${workspaceFolder}/kernel/"],
+        "cppStandard": "c++14",
+        "browse": {
+        }
+      }
+    ],
+    "version": 4,
+    "files.associations": {
+      "random": "cpp",
+      "limits": "cpp"
+    }
+  }
+  
+  

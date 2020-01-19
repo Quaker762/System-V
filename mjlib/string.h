@@ -17,4 +17,4 @@ public:
 private:
     char m_characters[256];
 };
-}
+} // namespace MJ

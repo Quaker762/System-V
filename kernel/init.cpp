@@ -6,10 +6,10 @@
  * 
  */
 #include "arch/arm/cpu.h"
-#include <kernel/device/uart.h>
 
-#include <kernel/kstdlib/kstdio.h>
 #include <kernel/assertions.h>
+#include <kernel/device/uart.h>
+#include <kernel/kstdlib/kstdio.h>
 
 extern "C" void init()
 {
@@ -20,5 +20,5 @@ extern "C" void init()
     relocate_vector_table();
 
     kprintf("entering hang...system halted");
-    for(;;){}
+    for(;;) {}
 }

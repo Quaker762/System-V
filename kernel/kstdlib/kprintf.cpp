@@ -8,7 +8,7 @@
 #include <stdarg.h>
 
 static UART uart0(UART0_BASE);
-static constexpr const char* digits="0123456789abcdef";
+static constexpr const char* digits = "0123456789abcdef";
 
 [[gnu::always_inline]] inline static int kprintf_internal_hex(uint32_t number)
 {
@@ -17,7 +17,7 @@ static constexpr const char* digits="0123456789abcdef";
     int shifts = 0;
     for(uint32_t i = number; i > 0; i >>= 4)
         shifts++;
-    
+
     if(shifts == 0)
         shifts = 1;
 
@@ -35,7 +35,7 @@ static constexpr const char* digits="0123456789abcdef";
 {
     int ret = 0;
     char buff[512];
- 
+
     if(number < 0)
     {
         uart0.putc('-');
@@ -71,41 +71,41 @@ static int kprintf_internal(const char*& fmt, const va_list& arg)
             const char char_ptr = *++fmt;
             switch(char_ptr)
             {
-            case 'c':
-            {
-                char c = va_arg(arg, int);
-                uart0.putc(c);
-                num_written++;
-                break;
-            }
-            case 's':
-            {
-                const char* str = va_arg(arg, const char*);
-                uart0.puts(str);
-                num_written += strlen(str);
-                break;
-            }
-            case 'd':
-            {
-                int val = va_arg(arg, int);
-                num_written += val < 0 ? kprintf_internal_number(val) + 1 : kprintf_internal_number(val);
-                break;
-            }
-            case 'x':
-            {
-                uint32_t val = va_arg(arg, uint32_t);
-                num_written += kprintf_internal_hex(val);
-                break;
-            }
-            case '%':
-            {
-                uart0.putc('%');
-                num_written++;
-                break;
-            }
-            default:
-                ASSERT_NOT_REACHED();
-                break;
+                case 'c':
+                {
+                    char c = va_arg(arg, int);
+                    uart0.putc(c);
+                    num_written++;
+                    break;
+                }
+                case 's':
+                {
+                    const char* str = va_arg(arg, const char*);
+                    uart0.puts(str);
+                    num_written += strlen(str);
+                    break;
+                }
+                case 'd':
+                {
+                    int val = va_arg(arg, int);
+                    num_written += val < 0 ? kprintf_internal_number(val) + 1 : kprintf_internal_number(val);
+                    break;
+                }
+                case 'x':
+                {
+                    uint32_t val = va_arg(arg, uint32_t);
+                    num_written += kprintf_internal_hex(val);
+                    break;
+                }
+                case '%':
+                {
+                    uart0.putc('%');
+                    num_written++;
+                    break;
+                }
+                default:
+                    ASSERT_NOT_REACHED();
+                    break;
             }
 
             fmt++;
