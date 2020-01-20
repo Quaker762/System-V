@@ -1,20 +1,25 @@
 {
-    "env": {
-      "myDefaultIncludePath": ["${workspaceFolder}", "${workspaceFolder}/kernel/"],
-    },
-    "configurations": [
-      {
-        "includePath": ["${workspaceFolder}", "${workspaceFolder}/kernel/"],
-        "cppStandard": "c++14",
-        "browse": {
-        }
-      }
+  "env": {
+    "myDefaultIncludePath": [
+      "${workspaceFolder}",
+      "${workspaceFolder}/kernel/"
     ],
-    "version": 4,
-    "files.associations": {
-      "random": "cpp",
-      "limits": "cpp"
+  },
+  "configurations": [
+    {
+      "includePath": [
+        "${workspaceFolder}",
+        "${workspaceFolder}/kernel/"
+      ],
+      "cppStandard": "c++14",
+      "browse": {}
     }
-  }
-  
-  
+  ],
+  "version": 4,
+  "files.associations": {
+    "random": "cpp",
+    "limits": "cpp"
+  },
+  "clang-format.executable": "/usr/bin/clang-format",
+  "editor.formatOnSave": true
+}
