@@ -9,9 +9,6 @@
 // TODO: Optimise me with assembly please!
 void* memcpy(void* src, void* dst, size_t num)
 {
-    if(dst >= src)
-        return dst;
-
     // r0 = src
     // r1 = dst
     // r2 = num
