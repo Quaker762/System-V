@@ -1,6 +1,8 @@
-#include <kernel/kstdlib/kstdio.h>
 #include "arch/arm/cpu.h"
+
 #include "assertions.h"
+
+#include <kernel/kstdlib/kstdio.h>
 
 void __assertion_failed(const char* msg, const char* file, unsigned line, const char* func)
 {
@@ -36,12 +38,19 @@ enum class ExceptionType
     }
 
     kprintf("System halted\n");
-    for(;;);
+    for(;;)
+        ;
 }
 
 // This handles the UNDEFINED exception. Illegal Instruction
 // is a better term for this imho
 extern "C" void illegal_instruction_handler(const register_dump& regs)
 {
-    kpanic(ExceptionType::ILLEGAL_INSTRUCTION, regs);
+    StatusRegister spsr;
+
+    if(spsr.get_pre_exception_mode() == ProcessorMode::KERNEL_MODE)
+    {
+        kprintf("Argh! We crashed in Kernel Mode!\n");
+        kpanic(ExceptionType::ILLEGAL_INSTRUCTION, regs);
+    }
 }
