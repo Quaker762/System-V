@@ -54,11 +54,11 @@ int memcmp(void* src, void* target, size_t num)
     const uint8_t* str_ptr = reinterpret_cast<uint8_t*>(src);
     const uint8_t* target_ptr = reinterpret_cast<uint8_t*>(target);
 
-    while(num--)
+    for(int i = 0; i < static_cast<int>(num); ++i)
     {
-        if(*str_ptr < *target_ptr)
+        if(*(str_ptr + i) < *(target_ptr + i))
             return -1;
-        if(*str_ptr > *target_ptr)
+        if(*(str_ptr + i) > *(target_ptr + i))
             return 1;
     }
 
