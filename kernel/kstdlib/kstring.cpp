@@ -17,11 +17,11 @@ void* memcpy(void* src, void* dst, size_t num)
     if((reinterpret_cast<uint32_t>(src) & 3) == 0 && (reinterpret_cast<uint32_t>(dst) & 3) == 0 && (num & 3) == 0)
     {
         __asm__ volatile(
-        "copy:;"
-        "ldr r3, [r0], #4;" // Load r3 with src[offset]. src += 4
-        "str r3, [r1], #4;" // Store r3 into src[offset]. dst += 4
-        "subs r2, r2, #4;"  // num -= 4
-        "bgt copy");
+        "copy:\n"
+        "ldr r3, [r0], #4\n" // Load r3 with src[offset]. src += 4
+        "str r3, [r1], #4\n" // Store r3 into src[offset]. dst += 4
+        "subs r2, r2, #4\n"  // num -= 4
+        "bgt copy\n");
     }
     else
     {
@@ -41,10 +41,10 @@ void* memset(void* ptr, int value, size_t num)
     // r1 = value
     // r2 = num
     __asm__ volatile(
-    "move:;"
-    "strb r1, [r0], #1;"
-    "subs r2, r2, #1;"
-    "bgt move");
+    "move:"
+    "strb r1, [r0], #1\n"
+    "subs r2, r2, #1\n"
+    "bgt move\n");
 
     return ptr;
 }
