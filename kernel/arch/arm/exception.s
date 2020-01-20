@@ -39,9 +39,8 @@ illegal_instruction_trampoline:
     # We need to reload the stack pointer. More about
     # why here: https://electronics.stackexchange.com/questions/291548/undefined-exception-in-arm-processor
     ldr sp, =__STACK_TOP // It doesn't matter that we overwrite the stack
-    stm sp!, {r0-r12, lr, pc}
-    mrs r0, spsr
-    push {r0}
-    sub sp, #56
+    stmdb sp!, {r0-r12, lr, pc}
+    mrs r4, spsr
+    push {r4}
     mov r0, sp
     ldr pc, =illegal_instruction_handler
