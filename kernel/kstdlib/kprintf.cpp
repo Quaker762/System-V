@@ -59,7 +59,6 @@ static constexpr const char* digits = "0123456789abcdef";
     for(int i = strlen(buff) - 1; i >= 0; i--)
         uart0.putc(buff[i]);
 
-    ret++; // Take into account the '-'
     return ret;
 }
 
