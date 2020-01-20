@@ -22,6 +22,9 @@ static constexpr const char* digits = "0123456789abcdef";
         shifts = 1;
 
     shifts *= 4;
+    for(int i = (32 - shifts) / 4; i > 0; i--)
+        uart0.putc('0');
+
     while(shifts > 0)
     {
         shifts -= 4;
