@@ -47,12 +47,12 @@ static constexpr const char* digits = "0123456789abcdef";
 
     memset(buff, 0, 512);
     int i = 0;
-    while(number)
+    do
     {
         buff[i++] = '0' + (number % 10);
         number /= 10;
         ret++;
-    }
+    } while(number);
 
     int len = strlen(buff);
     UNUSED(len);
