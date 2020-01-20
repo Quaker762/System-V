@@ -19,7 +19,7 @@ vector_table:
 .align 8
 vector_table:
     b .
-    b .
+    b illegal_instruction_trampoline
     b .
     b .
     b .
@@ -33,3 +33,15 @@ relocate_vector_table:
     ldr r0, =vector_table
     mcr p15, 0, r0, c12, c0, 0
     bx lr
+
+.extern illegal_instruction_handler
+illegal_instruction_trampoline:
+    # We need to reload the stack pointer. More about
+    # why here: https://electronics.stackexchange.com/questions/291548/undefined-exception-in-arm-processor
+    ldr sp, =__STACK_TOP // It doesn't matter that we overwrite the stack
+    stm sp!, {r0-r12, lr, pc}
+    mrs r0, spsr
+    push {r0}
+    sub sp, #56
+    mov r0, sp
+    ldr pc, =illegal_instruction_handler

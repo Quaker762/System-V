@@ -12,6 +12,12 @@
     for(;;);
 }
 
+struct register_dump
+{
+    uint32_t r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, fp, r12, lr, pc;
+    uint32_t spsr;
+};
+
 // A clever trick from Serenity OS. 
 // This class is instantiated at the beginning of a function
 // that should have interrupts disabled. The constructor emits the
