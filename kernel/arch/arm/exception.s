@@ -18,7 +18,7 @@ vector_table:
 .global vector_table
 .align 8
 vector_table:
-    b .
+    ldr pc, =_start
     b illegal_instruction_trampoline
     b .
     b .
@@ -39,8 +39,14 @@ illegal_instruction_trampoline:
     # We need to reload the stack pointer. More about
     # why here: https://electronics.stackexchange.com/questions/291548/undefined-exception-in-arm-processor
     ldr sp, =__STACK_TOP // It doesn't matter that we overwrite the stack
-    stmdb sp!, {r0-r12, lr, pc}
-    mrs r4, spsr
-    push {r4}
+    
+    # Let's save all the registers before we enter the cpp function handler
+    stmfd sp!, {r0-r12, lr}
+    mrs r0, spsr
+    stmfd sp!, {r0}
     mov r0, sp
-    ldr pc, =illegal_instruction_handler
+
+    # Jump to the actual exception handler
+    bl illegal_instruction_handler
+    add sp, sp, #4 // Ignore the value of SPSR we pushed onto the stack
+    ldmfd sp!, {r0-r12, pc}^ // Return from exception
