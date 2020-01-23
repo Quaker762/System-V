@@ -1,4 +1,4 @@
-qemu-system-arm -m 512 \
+qemu-system-arm -m 64 \
     -M virt \
     -cpu cortex-a15 \
     -kernel kernel.elf \

@@ -55,7 +55,7 @@ IRQ              -4                Next Instruction
 illegal_instruction_trampoline:
     # We need to reload the stack pointer. More about
     # why here: https://electronics.stackexchange.com/questions/291548/undefined-exception-in-arm-processor
-    ldr sp, =__STACK_TOP // It doesn't matter that we overwrite the stack
+    ldr sp, =__KERNEL_STACK_TOP // It doesn't matter that we overwrite the stack
     
     # Let's save all the registers before we enter the cpp function handler
     stmfd sp!, {r0-r12, lr}
@@ -70,7 +70,7 @@ illegal_instruction_trampoline:
 
 .extern data_abort_handler
 prefetch_abort_trampoline:
-    ldr sp, =__STACK_TOP // It doesn't matter that we overwrite the stack
+    ldr sp, =__KERNEL_STACK_TOP // It doesn't matter that we overwrite the stack
 
     # Let's save all the registers before we enter the cpp function handler
     SUB  lr, lr, #4 // Adjust LR as per table above
@@ -86,7 +86,7 @@ prefetch_abort_trampoline:
 
 .extern data_abort_handler
 data_abort_trampoline:
-    ldr sp, =__STACK_TOP // It doesn't matter that we overwrite the stack
+    ldr sp, =__KERNEL_STACK_TOP // It doesn't matter that we overwrite the stack
 
     # Let's save all the registers before we enter the cpp function handler
     SUB  lr, lr, #8 // Adjust LR as per table above

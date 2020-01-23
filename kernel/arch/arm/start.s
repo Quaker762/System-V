@@ -5,7 +5,7 @@
 
 .global _start
 _start:
-    ldr sp, =__STACK_TOP
+    ldr sp, =__KERNEL_STACK_TOP
     bl __cxa_global_constructors
     b init
 
