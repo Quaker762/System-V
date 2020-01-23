@@ -48,19 +48,19 @@ enum class ExceptionType
     {
         case ExceptionType::ILLEGAL_INSTRUCTION:
         {
-            uint32_t faulting_address = regs.lr - 0x4;
+            uint32_t faulting_address = regs.lr - 0x4; // As we are returning to the next instruction, we need to read the previous instruction
             kprintf("Illegal Instruction!\nFaulting address @ 0x%x(0x%x)\n", faulting_address, *reinterpret_cast<uint32_t*>(faulting_address));
             break;
         }
         case ExceptionType::PREFETCH_ABORT:
         {
-            uint32_t faulting_address = regs.lr - 0x4;
+            uint32_t faulting_address = regs.lr;
             kprintf("Prefetch Abort!\nFaulting address @ 0x%x(0x%x)\n", faulting_address, *reinterpret_cast<uint32_t*>(faulting_address));
             break;
         }
         case ExceptionType::DATA_ABORT:
         {
-            uint32_t faulting_address = regs.lr - 0x8;
+            uint32_t faulting_address = regs.lr;
             kprintf("Data Abort/Page Fault!\nFaulting address @ 0x%x(0x%x)\n", faulting_address, *reinterpret_cast<uint32_t*>(faulting_address));
             break;
         }
