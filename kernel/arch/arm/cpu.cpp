@@ -14,6 +14,7 @@ void __assertion_failed(const char* msg, const char* file, unsigned line, const 
 enum class ExceptionType
 {
     ILLEGAL_INSTRUCTION,
+    PREFETCH_ABORT,
     DATA_ABORT,
 };
 
@@ -51,6 +52,12 @@ enum class ExceptionType
             kprintf("Illegal Instruction!\nFaulting address @ 0x%x(0x%x)\n", faulting_address, *reinterpret_cast<uint32_t*>(faulting_address));
             break;
         }
+        case ExceptionType::PREFETCH_ABORT:
+        {
+            uint32_t faulting_address = regs.lr - 0x4;
+            kprintf("Prefetch Abort!\nFaulting address @ 0x%x(0x%x)\n", faulting_address, *reinterpret_cast<uint32_t*>(faulting_address));
+            break;
+        }
         case ExceptionType::DATA_ABORT:
         {
             uint32_t faulting_address = regs.lr - 0x8;
@@ -77,6 +84,18 @@ extern "C" void illegal_instruction_handler(const register_dump& regs)
     {
         kprintf("Argh! We crashed in Kernel Mode!\n");
         kpanic(ExceptionType::ILLEGAL_INSTRUCTION, regs);
+    }
+}
+
+extern "C" void prefetch_abort_handler(const register_dump& regs)
+{
+    StatusRegister spsr;
+
+    static_cast<void>(regs);
+    if(spsr.get_pre_exception_mode() == ProcessorMode::KERNEL_MODE)
+    {
+        kprintf("Argh! We crashed in Kernel Mode!\n");
+        kpanic(ExceptionType::PREFETCH_ABORT, regs);
     }
 }
 
