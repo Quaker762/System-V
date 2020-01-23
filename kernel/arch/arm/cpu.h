@@ -5,6 +5,10 @@
 
 #include <stdint.h>
 
+#define CAUSE_ILLEGAL_INSTRUCTION __asm__ volatile("bad:\n.word 0xffffffff\n")
+#define CAUSE_DATA_ABORT __asm__ volatile("mov r0,#0x00\nldr r0, [r0, #-4]")
+#define CAUSE_PREFETCH_ABORT __asm__ volatile("bkpt")
+
 [[noreturn]] static inline void halt()
 {
     __asm__ volatile("cpsid iaf"); // Disable all interrupts (IRQ, FIQ and **)
@@ -75,8 +79,7 @@ private:
     uint32_t m_spsr { 0 };
 };
 
-extern "C" void
-relocate_vector_table();
+extern "C" void relocate_vector_table();
 extern "C" void* vector_table;
 
 class CPUID
