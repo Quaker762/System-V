@@ -71,8 +71,8 @@ public:
     uint32_t cpsr() const { return m_cpsr; }
     uint32_t spsr() const { return m_spsr; }
 
-    ProcessorMode get_current_mode() const { return static_cast<ProcessorMode>(m_cpsr & 0x03); }
-    ProcessorMode get_pre_exception_mode() const { return static_cast<ProcessorMode>(m_spsr & 0x03); }
+    ProcessorMode get_current_mode() const { return static_cast<ProcessorMode>(m_cpsr & 0x0F); }
+    ProcessorMode get_pre_exception_mode() const { return static_cast<ProcessorMode>(m_spsr & 0x0F); }
 
 private:
     uint32_t m_cpsr { 0 };
