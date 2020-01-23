@@ -19,9 +19,7 @@ extern "C" void init()
     kprintf("Relocating vector table to 0x%x...\n", reinterpret_cast<uint32_t>(&vector_table));
     relocate_vector_table();
 
-    __asm__ volatile(
-    "bad:;"
-    ".word 0xffffffff;");
+    CAUSE_PREFETCH_ABORT;
 
     kprintf("entering hang...system halted");
     for(;;) {}

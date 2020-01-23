@@ -21,7 +21,7 @@ vector_table:
     ldr pc, =_start
     b illegal_instruction_trampoline
     b .
-    b .
+    b prefetch_abort_trampoline
     b data_abort_trampoline
     b .
     b .
@@ -48,6 +48,21 @@ illegal_instruction_trampoline:
 
     # Jump to the actual exception handler
     bl illegal_instruction_handler
+    add sp, sp, #4 // Ignore the value of SPSR we pushed onto the stack
+    ldmfd sp!, {r0-r12, pc}^ // Return from exception
+
+.extern data_abort_handler
+prefetch_abort_trampoline:
+    ldr sp, =__STACK_TOP // It doesn't matter that we overwrite the stack
+
+    # Let's save all the registers before we enter the cpp function handler
+    stmfd sp!, {r0-r12, lr}
+    mrs r0, spsr
+    stmfd sp!, {r0}
+    mov r0, sp
+
+    # Jump to the actual exception handler
+    bl prefetch_abort_handler
     add sp, sp, #4 // Ignore the value of SPSR we pushed onto the stack
     ldmfd sp!, {r0-r12, pc}^ // Return from exception
 
