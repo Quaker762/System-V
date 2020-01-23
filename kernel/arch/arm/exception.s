@@ -34,6 +34,23 @@ relocate_vector_table:
     mcr p15, 0, r0, c12, c0, 0
     bx lr
 
+/**
+LR needs to be adjusted for when we want to return after the exception has been handled.
+
+The following table is defined in the ARM Architecture Reference Manual:
+
+-----------------------------------------------------------------------
+EXCEPTION        ADJUSTMENT        INSTRUCTION RETURNED TO
+-----------------------------------------------------------------------
+SVC              0                 Next Instruction
+Undef(illegal)   0                 Next Instruction
+Prefetch Abort   -4                Aborting Instruction
+Data Abort       -8                Aborting Instruction if precise
+FIQ              -4                Next Instruction
+IRQ              -4                Next Instruction
+------------------------------------------------------------------------
+*/
+
 .extern illegal_instruction_handler
 illegal_instruction_trampoline:
     # We need to reload the stack pointer. More about
@@ -56,6 +73,7 @@ prefetch_abort_trampoline:
     ldr sp, =__STACK_TOP // It doesn't matter that we overwrite the stack
 
     # Let's save all the registers before we enter the cpp function handler
+    SUB  lr, lr, #4 // Adjust LR as per table above
     stmfd sp!, {r0-r12, lr}
     mrs r0, spsr
     stmfd sp!, {r0}
@@ -71,6 +89,7 @@ data_abort_trampoline:
     ldr sp, =__STACK_TOP // It doesn't matter that we overwrite the stack
 
     # Let's save all the registers before we enter the cpp function handler
+    SUB  lr, lr, #8 // Adjust LR as per table above
     stmfd sp!, {r0-r12, lr}
     mrs r0, spsr
     stmfd sp!, {r0}
