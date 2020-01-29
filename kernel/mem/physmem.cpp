@@ -16,6 +16,8 @@ extern uint32_t __USABLE_RAM_START;
 extern uint32_t __RAM_BASE_ADDRESS;
 extern uint32_t __RAM_TOP_ADDRESS;
 
+//#define PMM_DEBUG
+
 static inline void bitmap_set_bit(uint32_t bit)
 {
     m_bitmap[bit / 32] |= (1 << (bit % 32));
@@ -50,6 +52,30 @@ static uint32_t find_first_free_bit()
     ASSERT_NOT_REACHED();
 }
 
+// This is a bit of a hack...
+static uint32_t find_16k_aligned_bit()
+{
+    for(size_t i = 0; i < m_free_blocks / 32; i++)
+    {
+        if(m_bitmap[i] == MemoryManager::PMM_REGION_FULL)
+            continue;
+
+        for(int j = 0; j < 32; j++)
+        {
+            if(m_bitmap[i] & (1 << j))
+                continue;
+
+            uint32_t addr = reinterpret_cast<uint32_t>(&__USABLE_RAM_START) + ((i * 32) + j) * MemoryManager::PMM_BLOCK_SIZE;
+            if((addr & 0x3fff) != 0)
+                continue;
+
+            return (i * 32) + j;
+        }
+    }
+
+    ASSERT_NOT_REACHED();
+}
+
 namespace MemoryManager
 {
 
@@ -69,11 +95,30 @@ void* allocate_physical_page()
 
     void* block = reinterpret_cast<void*>(reinterpret_cast<uint32_t>(&__USABLE_RAM_START) + (bit * PMM_BLOCK_SIZE));
 
-#ifdef DEBUG
+#ifdef PMM_DEBUG
     kprintf("pmm: found a free block at 0x%x\n", block);
 #endif
 
+    m_used_blocks--;
+    m_used_blocks++;
     return block;
 }
 
+void* allocate_16kb_aligned_page()
+{
+    uint32_t bit = find_16k_aligned_bit();
+    bitmap_set_bit(bit);
+
+    void* block = reinterpret_cast<void*>(reinterpret_cast<uint32_t>(&__USABLE_RAM_START) + (bit * PMM_BLOCK_SIZE));
+
+    ASSERT((reinterpret_cast<uint32_t>(block) & 0x3fff) == 0);
+
+#ifdef PMM_DEBUG
+    kprintf("pmm: found a free block at 0x%x\n", block);
+#endif
+
+    m_free_blocks--;
+    m_used_blocks++;
+    return block;
+}
 } // namespace MemoryManager

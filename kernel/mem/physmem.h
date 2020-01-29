@@ -14,6 +14,7 @@ static constexpr uint32_t PMM_REGION_FULL = 0xffffffff;
 
 void init();
 void* allocate_physical_page();
+void* allocate_16kb_aligned_page();
 void* allocate_region(size_t);
 
-}
+} // namespace MemoryManager
