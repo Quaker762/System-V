@@ -46,6 +46,9 @@ SECTIONS {
     __KERNEL_STACK_BASE = .;
     . += 0x1000;
     __KERNEL_STACK_TOP = .;
+    __PMM_BITMAP = .;
+    . += 0x1000;
+    __USABLE_RAM_START = .;
 
     . = 0x44000000;
     __RAM_TOP_ADDRESS = .;

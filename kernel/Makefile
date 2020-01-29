@@ -9,6 +9,7 @@ CXX_OBJS = \
 	kstdlib/kstring.o \
 	kstdlib/kprintf.o \
 	device/uart.o \
+	mem/physmem.o \
 	init.o
 
 ASM=arm-none-eabi-as
