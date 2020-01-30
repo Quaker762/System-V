@@ -82,6 +82,25 @@ private:
 extern "C" void relocate_vector_table();
 extern "C" void* vector_table;
 
+enum class SCTLRFlag
+{
+    MMU_ENABLE = 0x1,
+    ALIGNMENT_CHECK_ENABLE = 0x2,
+    CACHE_ENABLE = 0x4,
+    BRANCH_PREDICTION_ENABLE = 0x800,
+    INSTRUCTION_CACHE_ENABLE = 0x1000,
+    EXCEPTION_VECTOR_TABLE_BASE = 0x2000,
+    FIQ_CONFIGURATION_ENABLE = 0x200000,
+    ALIGNMENT_MODEL = 0x400000,
+    EXCEPTION_ENDIANNESS = 0x2000000,
+    NMFI_SUPPORT = 0x8000000,
+    THUMB_EXCEPTION_ENABLE = 0x40000000
+};
+
+void set_SCTLR_flag(SCTLRFlag flag);
+void unset_SCTLR_flag(SCTLRFlag flag);
+uint32_t get_SCTLR();
+
 class CPUID
 {
 public:
