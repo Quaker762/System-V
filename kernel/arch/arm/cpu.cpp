@@ -110,3 +110,39 @@ extern "C" void data_abort_handler(const register_dump& regs)
         kpanic(ExceptionType::DATA_ABORT, regs);
     }
 }
+
+void set_SCTLR_flag(SCTLRFlag flag)
+{
+    uint32_t reg;
+    __asm__ volatile("mrc p15, 0, %[result], c1, c0, 0"
+                     : [result] "=r"(reg));
+
+    reg |= static_cast<uint32_t>(flag);
+
+    __asm__ volatile("mcr p15, 0, %[value], c1, c0, 0"
+                     :
+                     : [value] "r"(reg));
+}
+
+void unset_SCTLR_flag(SCTLRFlag flag)
+{
+    uint32_t reg;
+    __asm__ volatile("mrc p15, 0, %[result], c1, c0, 0"
+                     : [result] "=r"(reg));
+
+    reg &= ~static_cast<uint32_t>(flag);
+
+    __asm__ volatile("mcr p15, 0, %[value], c1, c0, 0"
+                     :
+                     : [value] "r"(reg));
+}
+
+uint32_t get_SCTLR()
+{
+    uint32_t reg;
+
+    __asm__ volatile("mrc p15, 0, %[result], c1, c0, 0"
+                     : [result] "=r"(reg));
+
+    return reg;
+}
