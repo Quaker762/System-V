@@ -107,3 +107,50 @@ public:
     uint16_t m_primary_part_number; // 12-bits
     uint8_t m_rev;                  // 4-bits
 };
+
+/**
+ * Provides information about the implemented memory model and memory management support.
+ *
+ * More information here -> https://developer.arm.com/docs/ddi0595/e/aarch64-system-registers/id_mmfr0_el1
+ */
+class MemoryModelFeatures
+{
+public:
+    inline MemoryModelFeatures()
+    {
+        __asm__ volatile("mrc p15, 0, %[result], c0, c1, 4"
+                         : [result] "=r"(m_ID_MMFR0));
+
+        m_innerShr = (m_ID_MMFR0 >> 28);
+        m_FCSE = (m_ID_MMFR0 >> 24) & 0xF;
+        m_auxReg = (m_ID_MMFR0 >> 20) & 0xF;
+        m_TCM = (m_ID_MMFR0 >> 16) & 0xF;
+        m_shareLvl = (m_ID_MMFR0 >> 12) & 0xF;
+        m_outerShr = (m_ID_MMFR0 >> 8) & 0xF;
+        m_PMSA = (m_ID_MMFR0 >> 4) & 0xF;
+        m_VMSA = m_ID_MMFR0 & 0xF;
+    }
+
+    inline uint32_t ID_MMFR0() { return m_ID_MMFR0; }
+
+    inline uint8_t innerShr() { return m_innerShr; }
+    inline uint8_t FCSE() { return m_FCSE; }
+    inline uint8_t auxReg() { return m_auxReg; }
+    inline uint8_t TCM() { return m_TCM; }
+    inline uint8_t shareLvl() { return m_shareLvl; }
+    inline uint8_t outerShr() { return m_outerShr; }
+    inline uint8_t PMSA() { return m_PMSA; }
+    inline uint8_t VMSA() { return m_VMSA; }
+
+private:
+    uint32_t m_ID_MMFR0; // 32-bits
+
+    uint8_t m_innerShr; // 4-bits
+    uint8_t m_FCSE;     // 4-bits
+    uint8_t m_auxReg;   // 4-bits
+    uint8_t m_TCM;      // 4-bits
+    uint8_t m_shareLvl; // 4-bits
+    uint8_t m_outerShr; // 4-bits
+    uint8_t m_PMSA;     // 4-bits
+    uint8_t m_VMSA;     // 4-bits
+};
