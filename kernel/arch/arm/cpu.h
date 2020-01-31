@@ -82,7 +82,7 @@ private:
 extern "C" void relocate_vector_table();
 extern "C" void* vector_table;
 
-enum class SCTLRFlag
+enum class SCTLRFlag : uint32_t
 {
     MMU_ENABLE = 0x1,
     ALIGNMENT_CHECK_ENABLE = 0x2,
@@ -100,6 +100,41 @@ enum class SCTLRFlag
 void set_SCTLR_flag(SCTLRFlag flag);
 void unset_SCTLR_flag(SCTLRFlag flag);
 uint32_t get_SCTLR();
+
+// Helpful info about the DACR -> http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.ddi0211i/I1039311.html
+// According to the programmers guide, the use of domains is deprecated in ARMv7 and we is recommended to set
+// all domain ID fields to 0 and set all the fields in the DACR to 'Client'
+enum class DACRValue : uint32_t
+{
+    NO_ACCESS = 0x00000000,
+    CLIENT = 0x55555555,
+    RESERVED = 0xAAAAAAAA,
+    MANAGER = 0xFFFFFFFF
+};
+
+enum class Domain : uint32_t
+{
+    D0 = 0x00000003,
+    D1 = 0x0000000C,
+    D2 = 0x00000030,
+    D3 = 0x000000C0,
+    D4 = 0x00000300,
+    D5 = 0x00000C00,
+    D6 = 0x00003000,
+    D7 = 0x0000C000,
+    D8 = 0x00030000,
+    D9 = 0x000C0000,
+    D10 = 0x00300000,
+    D11 = 0x00C00000,
+    D12 = 0x03000000,
+    D13 = 0x0C000000,
+    D14 = 0x30000000,
+    D15 = 0xC0000000,
+    ALL_DOMAINS = 0xFFFFFFFF
+};
+
+void set_DACR(Domain domain, DACRValue access_type);
+uint32_t get_DACR();
 
 class CPUID
 {
@@ -140,36 +175,36 @@ public:
         __asm__ volatile("mrc p15, 0, %[result], c0, c1, 4"
                          : [result] "=r"(m_ID_MMFR0));
 
-        m_innerShr = (m_ID_MMFR0 >> 28);
+        m_inner_shr = (m_ID_MMFR0 >> 28);
         m_FCSE = (m_ID_MMFR0 >> 24) & 0xF;
-        m_auxReg = (m_ID_MMFR0 >> 20) & 0xF;
+        m_aux_reg = (m_ID_MMFR0 >> 20) & 0xF;
         m_TCM = (m_ID_MMFR0 >> 16) & 0xF;
-        m_shareLvl = (m_ID_MMFR0 >> 12) & 0xF;
-        m_outerShr = (m_ID_MMFR0 >> 8) & 0xF;
+        m_share_lvl = (m_ID_MMFR0 >> 12) & 0xF;
+        m_outer_shr = (m_ID_MMFR0 >> 8) & 0xF;
         m_PMSA = (m_ID_MMFR0 >> 4) & 0xF;
         m_VMSA = m_ID_MMFR0 & 0xF;
     }
 
     inline uint32_t ID_MMFR0() { return m_ID_MMFR0; }
 
-    inline uint8_t innerShr() { return m_innerShr; }
+    inline uint8_t innerShr() { return m_inner_shr; }
     inline uint8_t FCSE() { return m_FCSE; }
-    inline uint8_t auxReg() { return m_auxReg; }
+    inline uint8_t auxReg() { return m_aux_reg; }
     inline uint8_t TCM() { return m_TCM; }
-    inline uint8_t shareLvl() { return m_shareLvl; }
-    inline uint8_t outerShr() { return m_outerShr; }
+    inline uint8_t shareLvl() { return m_share_lvl; }
+    inline uint8_t outerShr() { return m_outer_shr; }
     inline uint8_t PMSA() { return m_PMSA; }
     inline uint8_t VMSA() { return m_VMSA; }
 
 private:
     uint32_t m_ID_MMFR0; // 32-bits
 
-    uint8_t m_innerShr; // 4-bits
-    uint8_t m_FCSE;     // 4-bits
-    uint8_t m_auxReg;   // 4-bits
-    uint8_t m_TCM;      // 4-bits
-    uint8_t m_shareLvl; // 4-bits
-    uint8_t m_outerShr; // 4-bits
-    uint8_t m_PMSA;     // 4-bits
-    uint8_t m_VMSA;     // 4-bits
+    uint8_t m_inner_shr; // 4-bits
+    uint8_t m_FCSE;      // 4-bits
+    uint8_t m_aux_reg;   // 4-bits
+    uint8_t m_TCM;       // 4-bits
+    uint8_t m_share_lvl; // 4-bits
+    uint8_t m_outer_shr; // 4-bits
+    uint8_t m_PMSA;      // 4-bits
+    uint8_t m_VMSA;      // 4-bits
 };
