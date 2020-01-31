@@ -146,3 +146,29 @@ uint32_t get_SCTLR()
 
     return reg;
 }
+
+void set_DACR(Domain domain, DACRValue access_type)
+{
+    uint32_t reg;
+    uint32_t mask = static_cast<uint32_t>(domain) & static_cast<uint32_t>(access_type);
+
+    __asm__ volatile("mrc p15, 0, %[result], c3, c0, 0"
+                     : [result] "=r"(reg));
+
+    reg &= (~static_cast<uint32_t>(domain)); // Set domain to 00
+    reg |= mask;                             // Set domain to specified value
+
+    __asm__ volatile("mcr p15, 0, %[value], c3, c0, 0"
+                     :
+                     : [value] "r"(reg));
+}
+
+uint32_t get_DACR()
+{
+    uint32_t reg;
+
+    __asm__ volatile("mrc p15, 0, %[result], c3, c0, 0"
+                     : [result] "=r"(reg));
+
+    return reg;
+}

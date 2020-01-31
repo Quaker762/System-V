@@ -82,7 +82,7 @@ private:
 extern "C" void relocate_vector_table();
 extern "C" void* vector_table;
 
-enum class SCTLRFlag
+enum class SCTLRFlag : uint32_t
 {
     MMU_ENABLE = 0x1,
     ALIGNMENT_CHECK_ENABLE = 0x2,
@@ -100,6 +100,41 @@ enum class SCTLRFlag
 void set_SCTLR_flag(SCTLRFlag flag);
 void unset_SCTLR_flag(SCTLRFlag flag);
 uint32_t get_SCTLR();
+
+// Helpful info about the DACR -> http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.ddi0211i/I1039311.html
+// According to the programmers guide, the use of domains is deprecated in ARMv7 and we is recommended to set
+// all domain ID fields to 0 and set all the fields in the DACR to 'Client'
+enum class DACRValue : uint32_t
+{
+    NO_ACCESS = 0x00000000,
+    CLIENT = 0x55555555,
+    RESERVED = 0xAAAAAAAA,
+    MANAGER = 0xFFFFFFFF
+};
+
+enum class Domain : uint32_t
+{
+    D0 = 0x00000003,
+    D1 = 0x0000000C,
+    D2 = 0x00000030,
+    D3 = 0x000000C0,
+    D4 = 0x00000300,
+    D5 = 0x00000C00,
+    D6 = 0x00003000,
+    D7 = 0x0000C000,
+    D8 = 0x00030000,
+    D9 = 0x000C0000,
+    D10 = 0x00300000,
+    D11 = 0x00C00000,
+    D12 = 0x03000000,
+    D13 = 0x0C000000,
+    D14 = 0x30000000,
+    D15 = 0xC0000000,
+    ALL_DOMAINS = 0xFFFFFFFF
+};
+
+void set_DACR(Domain domain, DACRValue access_type);
+uint32_t get_DACR();
 
 class CPUID
 {
