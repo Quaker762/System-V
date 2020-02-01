@@ -20,6 +20,7 @@ static constexpr uint32_t PMM_REGION_FULL = 0xffffffff;
 
 void init();
 void* allocate_physical_page();
+void free_page(void*);
 void* allocate_1k_page();
 void free_1k_page();
 void* allocate_16kb_aligned_page();

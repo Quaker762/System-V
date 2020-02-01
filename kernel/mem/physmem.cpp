@@ -108,6 +108,20 @@ void* allocate_physical_page()
     return block;
 }
 
+void free_page(void* ptr)
+{
+    PhysicalAddress paddr(reinterpret_cast<uint32_t>(ptr));
+    int frame = paddr.get() / PMM_BLOCK_SIZE;
+
+#ifdef PMM_DEBUG
+    kprintf("pmm: freeing frame 0x%x\n", frame);
+#endif
+
+    bitmap_clear_bit(frame);
+    m_free_blocks++;
+    m_used_blocks--;
+}
+
 void* allocate_16kb_aligned_page()
 {
     uint32_t bit = find_16k_aligned_bit();
