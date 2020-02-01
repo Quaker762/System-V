@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include <kernel/arch/arm/cp15.h>
 #include <kernel/kstdlib/kstring.h>
 #include <kernel/mem/address.h>
 #include <kernel/mem/physmem.h>
@@ -58,7 +59,6 @@ struct L1TranslationTable
 namespace VirtMemoryManager
 {
 
-uint32_t get_TTBCR();
 L1TranslationTable* allocate_L1_translation_table();
 void switch_L1_translation_table(L1TranslationTable* table);
 

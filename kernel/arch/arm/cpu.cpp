@@ -20,20 +20,11 @@ enum class ExceptionType
 
 [[noreturn]] static void kpanic(const ExceptionType& type, const register_dump& regs)
 {
-    uint32_t ifsr, dfsr;
-    uint32_t ifar, dfar;
-    uint32_t far;
-
-    __asm__ volatile("mrc p15, 0, %0, c5, c0, 1"
-                     : "=r"(ifsr));
-    __asm__ volatile("mrc p15, 0, %0, c5, c0, 0"
-                     : "=r"(dfsr));
-    __asm__ volatile("mrc p15, 0, %0, c6, c0, 2"
-                     : "=r"(ifar));
-    __asm__ volatile("mrc p15, 0, %0, c6, c0, 0"
-                     : "=r"(dfar));
-    __asm__ volatile("mrc p15, 0, %0, c6, c0, 1"
-                     : "=r"(far));
+    uint32_t ifsr = CP15::get_IFSR();
+    uint32_t dfsr = CP15::get_DFSR();
+    uint32_t ifar = CP15::get_IFAR();
+    uint32_t dfar = CP15::get_DFAR();
+    uint32_t far = CP15::get_FAR();
 
     //TODO: We need to check whether or not this occured in Kernel Mode or User Mode
     kprintf("r0:  0x%x r1: 0x%x r2:   0x%x r3: 0x%x\n", regs.r0, regs.r1, regs.r2, regs.r3);
@@ -109,66 +100,4 @@ extern "C" void data_abort_handler(const register_dump& regs)
         kprintf("Argh! We crashed in Kernel Mode!\n");
         kpanic(ExceptionType::DATA_ABORT, regs);
     }
-}
-
-void set_SCTLR_flag(SCTLRFlag flag)
-{
-    uint32_t reg;
-    __asm__ volatile("mrc p15, 0, %[result], c1, c0, 0"
-                     : [result] "=r"(reg));
-
-    reg |= static_cast<uint32_t>(flag);
-
-    __asm__ volatile("mcr p15, 0, %[value], c1, c0, 0"
-                     :
-                     : [value] "r"(reg));
-}
-
-void unset_SCTLR_flag(SCTLRFlag flag)
-{
-    uint32_t reg;
-    __asm__ volatile("mrc p15, 0, %[result], c1, c0, 0"
-                     : [result] "=r"(reg));
-
-    reg &= ~static_cast<uint32_t>(flag);
-
-    __asm__ volatile("mcr p15, 0, %[value], c1, c0, 0"
-                     :
-                     : [value] "r"(reg));
-}
-
-uint32_t get_SCTLR()
-{
-    uint32_t reg;
-
-    __asm__ volatile("mrc p15, 0, %[result], c1, c0, 0"
-                     : [result] "=r"(reg));
-
-    return reg;
-}
-
-void set_DACR(Domain domain, DACRValue access_type)
-{
-    uint32_t reg;
-    uint32_t mask = static_cast<uint32_t>(domain) & static_cast<uint32_t>(access_type);
-
-    __asm__ volatile("mrc p15, 0, %[result], c3, c0, 0"
-                     : [result] "=r"(reg));
-
-    reg &= (~static_cast<uint32_t>(domain)); // Set domain to 00
-    reg |= mask;                             // Set domain to specified value
-
-    __asm__ volatile("mcr p15, 0, %[value], c3, c0, 0"
-                     :
-                     : [value] "r"(reg));
-}
-
-uint32_t get_DACR()
-{
-    uint32_t reg;
-
-    __asm__ volatile("mrc p15, 0, %[result], c3, c0, 0"
-                     : [result] "=r"(reg));
-
-    return reg;
 }

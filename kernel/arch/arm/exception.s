@@ -27,11 +27,14 @@ vector_table:
     b .
     b .
 
+.extern set_VBAR
 .global relocate_vector_table
 .section .text
 relocate_vector_table:
     ldr r0, =vector_table
-    mcr p15, 0, r0, c12, c0, 0
+    stmfd sp!, {r0-r12, lr}
+    bl set_VBAR
+    ldmfd sp!, {r0-r12, pc}^
     bx lr
 
 /**

@@ -6,6 +6,7 @@ CXX_OBJS = \
     arch/abi/cxa_pure.o \
 	arch/abi/cxa_global.o \
 	arch/arm/cpu.o \
+	arch/arm/cp15.o \
 	kstdlib/kstring.o \
 	kstdlib/kprintf.o \
 	device/uart.o \
