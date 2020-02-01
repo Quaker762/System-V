@@ -1,5 +1,4 @@
-qemu-system-arm -m 64 \
-    -M virt \
+qemu-system-arm -m 2G \
+    -M vexpress-a15 \
     -cpu cortex-a15 \
     -kernel kernel.elf \
-    -device VGA,vgamem_mb=32

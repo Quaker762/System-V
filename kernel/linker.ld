@@ -1,8 +1,10 @@
 ENTRY(_start)
 
 SECTIONS {
+    . = 0x80000000;
+    __RAM_START = .;
 
-    . = 0x100000;
+    . = 0x80010000;
     __KERNEL_START = .;
 
     .text BLOCK(4K) : ALIGN(4K)
@@ -30,7 +32,6 @@ SECTIONS {
         *(.rodata)
     }
 
-    .= 0x40000000;
     .data BLOCK(4K) : ALIGN(4K)
     {
         *(.data)
@@ -42,14 +43,13 @@ SECTIONS {
     }
 
     . = ALIGN(4K);
-    __RAM_BASE_ADDRESS = .;
     __KERNEL_STACK_BASE = .;
     . += 0x1000;
     __KERNEL_STACK_TOP = .;
     __PMM_BITMAP = .;
     . += 0x1000;
-    __USABLE_RAM_START = .;
+    __FREE_RAM_START = .;
 
-    . = 0x44000000;
-    __RAM_TOP_ADDRESS = .;
+    . = 0xFFFFFFFF;
+    __RAM_END = .;
 }

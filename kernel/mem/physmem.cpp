@@ -14,9 +14,8 @@ static size_t m_free_blocks = 0;
 static size_t m_used_blocks = 0;
 
 extern uint32_t __PMM_BITMAP;
-extern uint32_t __USABLE_RAM_START;
-extern uint32_t __RAM_BASE_ADDRESS;
-extern uint32_t __RAM_TOP_ADDRESS;
+extern uint32_t __RAM_START;
+extern uint32_t __RAM_END;
 
 static MJ::LinkedList<MemoryManager::Page1k> page_list_1k;
 
@@ -70,7 +69,7 @@ static uint32_t find_16k_aligned_bit()
             if(m_bitmap[i] & (1 << j))
                 continue;
 
-            uint32_t addr = reinterpret_cast<uint32_t>(&__USABLE_RAM_START) + ((i * 32) + j) * MemoryManager::PMM_BLOCK_SIZE;
+            uint32_t addr = reinterpret_cast<uint32_t>(&__RAM_START) + ((i * 32) + j) * MemoryManager::PMM_BLOCK_SIZE;
             if((addr & 0x3fff) != 0)
                 continue;
 
@@ -88,7 +87,7 @@ namespace MemoryManager
 void init()
 {
     m_bitmap = &__PMM_BITMAP;
-    m_free_bytes = reinterpret_cast<uint32_t>(&__RAM_TOP_ADDRESS) - reinterpret_cast<uint32_t>(&__PMM_BITMAP);
+    m_free_bytes = reinterpret_cast<uint32_t>(&__RAM_END) - reinterpret_cast<uint32_t>(&__RAM_START);
     m_free_blocks = m_free_bytes / PMM_BLOCK_SIZE;
 
     kprintf("pmm: Intialised with %d free blocks\n", m_free_blocks);
@@ -99,7 +98,7 @@ void* allocate_physical_page()
     uint32_t bit = find_first_free_bit();
     bitmap_set_bit(bit);
 
-    void* block = reinterpret_cast<void*>(reinterpret_cast<uint32_t>(&__USABLE_RAM_START) + (bit * PMM_BLOCK_SIZE));
+    void* block = reinterpret_cast<void*>(reinterpret_cast<uint32_t>(&__RAM_START) + (bit * PMM_BLOCK_SIZE));
 
 #ifdef PMM_DEBUG
     kprintf("pmm: found a free block at 0x%x\n", block);
@@ -129,7 +128,7 @@ void* allocate_16kb_aligned_page()
     uint32_t bit = find_16k_aligned_bit();
     bitmap_set_bit(bit);
 
-    void* block = reinterpret_cast<void*>(reinterpret_cast<uint32_t>(&__USABLE_RAM_START) + (bit * PMM_BLOCK_SIZE));
+    void* block = reinterpret_cast<void*>(reinterpret_cast<uint32_t>(&__RAM_START) + (bit * PMM_BLOCK_SIZE));
 
     ASSERT((reinterpret_cast<uint32_t>(block) & 0x3fff) == 0);
 
