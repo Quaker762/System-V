@@ -48,14 +48,14 @@ uint32_t get_TTBCR()
     return reg;
 }
 
-void switch_L1_translation_table(L1_translation_table* table)
+void switch_L1_translation_table(L1TranslationTable* table)
 {
     set_TTBR0(reinterpret_cast<uint32_t>(table));
 }
 
-L1_translation_table* allocate_L1_translation_table()
+L1TranslationTable* allocate_L1_translation_table()
 {
-    return static_cast<L1_translation_table*>(MemoryManager::allocate_16kb_aligned_page());
+    return reinterpret_cast<L1TranslationTable*>(MemoryManager::allocate_16kb_aligned_page());
 }
 
 } // namespace VirtMemoryManager
