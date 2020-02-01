@@ -3,7 +3,9 @@
  */
 #include <common/assert.h>
 #include <kernel/kstdlib/kstdio.h>
+#include <kernel/mem/address.h>
 #include <kernel/mem/physmem.h>
+#include <mjlib/linkedlist.h>
 #include <stdint.h>
 
 static uint32_t* m_bitmap = 0;
@@ -15,6 +17,8 @@ extern uint32_t __PMM_BITMAP;
 extern uint32_t __USABLE_RAM_START;
 extern uint32_t __RAM_BASE_ADDRESS;
 extern uint32_t __RAM_TOP_ADDRESS;
+
+static MJ::LinkedList<MemoryManager::Page1k> page_list_1k;
 
 //#define PMM_DEBUG
 
@@ -121,4 +125,38 @@ void* allocate_16kb_aligned_page()
     m_used_blocks++;
     return block;
 }
+
+void* allocate_1k_page()
+{
+    // Let's make some pages!
+    if(page_list_1k.empty())
+    {
+#ifdef PMM_DEBUG
+        kprintf("pmm: no 1k pages available!\n");
+#endif
+        void* full_page = allocate_physical_page();
+        for(uint32_t i = 0; i < PMM_BLOCK_SIZE; i += PMM_PAGE_SIZE_1K)
+        {
+#ifdef PMM_DEBUG
+            kprintf("pmm: creating 1k page @ 0x%x\n", (reinterpret_cast<uint8_t*>(full_page) + i));
+#endif
+            Page1k* page = reinterpret_cast<Page1k*>(reinterpret_cast<uint8_t*>(full_page) + i);
+            page_list_1k.insert(page);
+        }
+    }
+
+    Page1k* page = page_list_1k.take();
+#ifdef PMM_DEBUG
+    kprintf("pmm: taking 1k page @ 0x%x\n", page);
+#endif
+
+    return page;
+}
+
+// Note: There's currently no way to reclaim a 4k page (and thus free it) if all
+// of the 1k pages are free. Once 4 1k pages are created, they are permanently 1k pages!
+void free_1k_page()
+{
+}
+
 } // namespace MemoryManager
