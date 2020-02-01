@@ -34,7 +34,7 @@ static inline void set_SCTLR(uint32_t reg)
                      : [value] "r"(reg));
 }
 
-namespace CP15
+namespace CPU
 {
 
 void set_DACR_by_domain(Domain domain, DACRValue access_type)
@@ -76,97 +76,10 @@ bool get_SCTLR_flag(SCTLRFlag flag)
     return true;
 }
 
-void set_TTBR0(uint32_t address)
-{
-    __asm__ volatile("mcr p15, 0, %[value], c2, c0, 0"
-                     :
-                     : [value] "r"(address));
-}
-
-uint32_t get_TTBR0()
-{
-    uint32_t address;
-
-    __asm__ volatile("mrc p15, 0, %[result], c2, c0, 0"
-                     : [result] "=r"(address));
-
-    return address;
-}
-
-void set_TTBCR(uint32_t reg)
-{
-    __asm__ volatile("mrc p15, 0, %[value], c2, c0, 2"
-                     :
-                     : [value] "r"(reg));
-}
-
-uint32_t get_TTBCR()
-{
-    uint32_t reg;
-
-    __asm__ volatile("mrc p15, 0, %[result], c2, c0, 2"
-                     : [result] "=r"(reg));
-
-    return reg;
-}
-
-uint32_t get_IFSR()
-{
-    uint32_t reg;
-    __asm__ volatile("mrc p15, 0, %[result], c5, c0, 1"
-                     : [result] "=r"(reg));
-    return reg;
-}
-
-uint32_t get_DFSR()
-{
-    uint32_t reg;
-
-    __asm__ volatile("mrc p15, 0, %[result], c5, c0, 0"
-                     : [result] "=r"(reg));
-    return reg;
-}
-
-uint32_t get_IFAR()
-{
-    uint32_t address;
-
-    __asm__ volatile("mrc p15, 0, %[result], c6, c0, 2"
-                     : [result] "=r"(address));
-    return address;
-}
-
-uint32_t get_DFAR()
-{
-    uint32_t address;
-
-    __asm__ volatile("mrc p15, 0, %[result], c6, c0, 0"
-                     : [result] "=r"(address));
-    return address;
-}
-
-uint32_t get_FAR()
-{
-    uint32_t address;
-
-    __asm__ volatile("mrc p15, 0, %[result], c6, c0, 1"
-                     : [result] "=r"(address));
-    return address;
-}
-
-uint32_t get_VBAR()
-{
-    uint32_t address;
-
-    __asm__ volatile("mrc p15, 0, %[result], c12, c0, 0"
-                     : [result] "=r"(address));
-    return address;
-}
-
 void set_VBAR(uint32_t address)
 {
     __asm__ volatile("mcr p15, 0, %[value], c12, c0, 0"
                      :
                      : [value] "r"(address));
 }
-} // namespace CP15
+} // namespace CPU

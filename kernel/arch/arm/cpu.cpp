@@ -20,11 +20,11 @@ enum class ExceptionType
 
 [[noreturn]] static void kpanic(const ExceptionType& type, const register_dump& regs)
 {
-    uint32_t ifsr = CP15::get_IFSR();
-    uint32_t dfsr = CP15::get_DFSR();
-    uint32_t ifar = CP15::get_IFAR();
-    uint32_t dfar = CP15::get_DFAR();
-    uint32_t far = CP15::get_FAR();
+    uint32_t ifsr = CPU::get_IFSR();
+    uint32_t dfsr = CPU::get_DFSR();
+    uint32_t ifar = CPU::get_IFAR();
+    uint32_t dfar = CPU::get_DFAR();
+    uint32_t far = CPU::get_FAR();
 
     //TODO: We need to check whether or not this occured in Kernel Mode or User Mode
     kprintf("r0:  0x%x r1: 0x%x r2:   0x%x r3: 0x%x\n", regs.r0, regs.r1, regs.r2, regs.r3);

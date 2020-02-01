@@ -136,7 +136,7 @@ enum class SCTLRFlag : uint32_t
     THUMB_EXCEPTION_ENABLE = 0x40000000
 };
 
-namespace CP15
+namespace CPU
 {
 void set_DACR_by_domain(Domain domain, DACRValue access_type);
 
@@ -144,23 +144,97 @@ void set_SCTLR_flag(SCTLRFlag flag);
 void unset_SCTLR_flag(SCTLRFlag flag);
 bool get_SCTLR_flag(SCTLRFlag flag);
 
-void set_TTBR0(uint32_t address);
-uint32_t get_TTBR0();
+static inline void set_TTBR0(uint32_t address)
+{
+    __asm__ volatile("mcr p15, 0, %[value], c2, c0, 0"
+                     :
+                     : [value] "r"(address));
+}
+
+static inline uint32_t get_TTBR0()
+{
+    uint32_t address;
+
+    __asm__ volatile("mrc p15, 0, %[result], c2, c0, 0"
+                     : [result] "=r"(address));
+
+    return address;
+}
 
 /**
  * Currently we will just want to set this to 0x00000000, as we only plan on using TTBR0
  * Page 1725 of the manual shows the layout of this register
  */
-void set_TTBCR(uint32_t reg);
-uint32_t get_TTBCR();
+static inline void set_TTBCR(uint32_t reg)
+{
+    __asm__ volatile("mrc p15, 0, %[value], c2, c0, 2"
+                     :
+                     : [value] "r"(reg));
+}
 
-uint32_t get_IFSR();
-uint32_t get_DFSR();
-uint32_t get_IFAR();
-uint32_t get_DFAR();
-uint32_t get_FAR();
+static inline uint32_t get_TTBCR()
+{
+    uint32_t reg;
 
-uint32_t get_VBAR();
-extern "C" void set_VBAR(uint32_t address);
+    __asm__ volatile("mrc p15, 0, %[result], c2, c0, 2"
+                     : [result] "=r"(reg));
 
-} // namespace CP15
+    return reg;
+}
+
+static inline uint32_t get_IFSR()
+{
+    uint32_t reg;
+    __asm__ volatile("mrc p15, 0, %[result], c5, c0, 1"
+                     : [result] "=r"(reg));
+    return reg;
+}
+
+static inline uint32_t get_DFSR()
+{
+    uint32_t reg;
+
+    __asm__ volatile("mrc p15, 0, %[result], c5, c0, 0"
+                     : [result] "=r"(reg));
+    return reg;
+}
+
+static inline uint32_t get_IFAR()
+{
+    uint32_t address;
+
+    __asm__ volatile("mrc p15, 0, %[result], c6, c0, 2"
+                     : [result] "=r"(address));
+    return address;
+}
+
+static inline uint32_t get_DFAR()
+{
+    uint32_t address;
+
+    __asm__ volatile("mrc p15, 0, %[result], c6, c0, 0"
+                     : [result] "=r"(address));
+    return address;
+}
+
+static inline uint32_t get_FAR()
+{
+    uint32_t address;
+
+    __asm__ volatile("mrc p15, 0, %[result], c6, c0, 1"
+                     : [result] "=r"(address));
+    return address;
+}
+
+static inline uint32_t get_VBAR()
+{
+    uint32_t address;
+
+    __asm__ volatile("mrc p15, 0, %[result], c12, c0, 0"
+                     : [result] "=r"(address));
+    return address;
+}
+
+extern "C" void set_VBAR(uint32_t address); // This can't be inlined because it's used in an assembly stub!
+
+} // namespace CPU
