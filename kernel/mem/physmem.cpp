@@ -53,6 +53,7 @@ static uint32_t find_first_free_bit()
         }
     }
 
+    kprintf("WHOA! We've run out of physical memory! :(\n");
     ASSERT_NOT_REACHED();
 }
 
@@ -77,6 +78,7 @@ static uint32_t find_16k_aligned_bit()
         }
     }
 
+    kprintf("WHOA! No more 16KiB aligned pages :( (no L1 table for you!)\n");
     ASSERT_NOT_REACHED();
 }
 
