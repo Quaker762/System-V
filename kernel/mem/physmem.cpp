@@ -20,7 +20,7 @@ extern uint32_t __RAM_TOP_ADDRESS;
 
 static MJ::LinkedList<MemoryManager::Page1k> page_list_1k;
 
-//#define PMM_DEBUG
+#define PMM_DEBUG
 
 static inline void bitmap_set_bit(uint32_t bit)
 {
@@ -169,8 +169,15 @@ void* allocate_1k_page()
 
 // Note: There's currently no way to reclaim a 4k page (and thus free it) if all
 // of the 1k pages are free. Once 4 1k pages are created, they are permanently 1k pages!
-void free_1k_page()
+void free_1k_page(void* ptr)
 {
+    PhysicalAddress addr = PhysicalAddress(reinterpret_cast<uint32_t>(ptr));
+
+#ifdef PMM_DEBUG
+    kprintf("pmm: freeing 1k page @ 0x%x\n", addr.get());
+#endif
+
+    page_list_1k.insert(reinterpret_cast<Page1k*>(addr.get()));
 }
 
 } // namespace MemoryManager
