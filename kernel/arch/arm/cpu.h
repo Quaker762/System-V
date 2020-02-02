@@ -18,6 +18,17 @@
         ;
 }
 
+// Disable FIQ and IRQs
+static inline void cli()
+{
+    __asm__ volatile("cpsid iaf"); // Disable all interrupts (IRQ, FIQ and **)
+}
+
+static inline void sti()
+{
+    __asm__ volatile("cpsie iaf");
+}
+
 struct register_dump
 {
     uint32_t spsr;
