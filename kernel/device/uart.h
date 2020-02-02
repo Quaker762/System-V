@@ -38,7 +38,7 @@
 #define UARTCR_TXE 0x100
 #define UARTCR_RXE 0x200
 
-#define UART0_BASE 0x1c090000
+static constexpr uintptr_t UART0_BASE = 0x1c090000;
 
 class UART
 {

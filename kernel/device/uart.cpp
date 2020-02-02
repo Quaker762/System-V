@@ -13,7 +13,8 @@ UART::UART(uint32_t base_address)
 void UART::write_character(char character) const
 {
     ASSERT(m_base_address);
-    //while(status_register() & UARTFR_BUSY); // This seems to break gdb! Let's not do it, shall we!
+    while(control_register() & UARTFR_TXFF)
+        ;
     *reinterpret_cast<volatile uint32_t*>(m_base_address) = character;
 
     // Add a return carriage if we detect a newline
