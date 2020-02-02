@@ -23,7 +23,7 @@ static uint16_t page_index(VirtualAddress address)
 
 void switch_L1_translation_table(L1TranslationTable* table)
 {
-    CP15::set_TTBR0(reinterpret_cast<uint32_t>(table));
+    CPU::set_TTBR0(reinterpret_cast<uint32_t>(table));
 }
 
 L1TranslationTable* allocate_L1_translation_table()
