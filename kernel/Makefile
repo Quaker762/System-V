@@ -23,11 +23,14 @@ CXXFLAGS += -std=c++14 -Wall -Wextra -Wold-style-cast
 CXXFLAGS += -ffreestanding -march=armv7ve -mcpu=cortex-a15
 CXXFLAGS += -O0 -g3
 CXXFLAGS += -fno-exceptions -fno-rtti -fno-stack-protector
+CXXFLAGS += -MP -MMD
 CXXFLAGS += -I./
 CXXFLAGS += -I../
 CXXFLAGS += -DKERNEL
 ASFLAGS +=
 LDFLAGS += -T linker.ld -nostdlib
+
+DEP = $(CXX_OBJS:%.o=%.d)
 
 ELF_IMAGE=kernel.elf
 
@@ -44,4 +47,6 @@ clean:
 	rm $(CXX_OBJS)
 	rm $(AS_OBJS)
 	rm $(ELF_IMAGE)
+	rm $(DEP)
 
+-include $(DEP)
