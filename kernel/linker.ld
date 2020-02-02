@@ -50,6 +50,6 @@ SECTIONS {
     . += 0x1000;
     __FREE_RAM_START = .;
 
-    . = 0xFFFFFFFF;
+    . = 0x100000000;
     __RAM_END = .;
 }
