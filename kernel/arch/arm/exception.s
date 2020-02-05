@@ -24,7 +24,7 @@ vector_table:
     b prefetch_abort_trampoline
     b data_abort_trampoline
     b .
-    b .
+    b irq_trampoline
     b .
 
 .extern set_VBAR
@@ -97,3 +97,17 @@ data_abort_trampoline:
     bl data_abort_handler
     add sp, sp, #4 // Ignore the value of SPSR we pushed onto the stack
     ldmfd sp!, {r0-r12, pc}^ // Return from exception
+
+.extern handle_irq
+irq_trampoline:
+    # Let's save all the registers before we enter the cpp function handler
+    SUB  lr, lr, #4 // Adjust LR as per table above
+    stmfd sp!, {r0-r12, lr}
+    mrs r0, spsr
+    stmfd sp!, {r0}
+    mov r0, sp
+
+    # Jump to the C irq handler
+    bl handle_irq
+    add sp, sp, #4
+    ldmfd sp!, {r0-r12, pc}^

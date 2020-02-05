@@ -4,6 +4,7 @@
 #pragma once
 
 #include <kernel/arch/arm/cp15.h>
+#include <kernel/irqhandler.h>
 #include <stdint.h>
 
 #define CAUSE_ILLEGAL_INSTRUCTION __asm__ volatile("bad:\n.word 0xffffffff\n")
@@ -55,6 +56,9 @@ public:
         __asm__ volatile("cpsie iaf");
     }
 };
+
+void install_handler(uint8_t, IRQHandler&);
+void remove_handler(uint8_t);
 
 enum class ProcessorMode : uint8_t
 {

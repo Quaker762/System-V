@@ -5,13 +5,16 @@ AS_OBJS = \
 CXX_OBJS = \
     arch/abi/cxa_pure.o \
 	arch/abi/cxa_global.o \
+	arch/abi/cxa_operator.o \
 	arch/arm/cpu.o \
 	arch/arm/cp15.o \
+	arch/arm/gic.o \
 	kstdlib/kstring.o \
 	kstdlib/kprintf.o \
 	device/uart.o \
 	mem/physmem.o \
 	mem/virtmem.o \
+	irqhandler.o \
 	init.o
 
 ASM=arm-none-eabi-as
@@ -46,7 +49,7 @@ ELF_IMAGE : $(CXX_OBJS) $(AS_OBJS)
 clean:
 	rm $(CXX_OBJS)
 	rm $(AS_OBJS)
-	rm $(ELF_IMAGE)
 	rm $(DEP)
+	rm $(ELF_IMAGE)
 
 -include $(DEP)

@@ -2,7 +2,11 @@
 
 #include "assertions.h"
 
+#include <kernel/arch/arm/gic.h>
+#include <kernel/irqhandler.h>
 #include <kernel/kstdlib/kstdio.h>
+
+static IRQHandler* irq_handlers[256];
 
 void __assertion_failed(const char* msg, const char* file, unsigned line, const char* func)
 {
@@ -17,6 +21,18 @@ enum class ExceptionType
     PREFETCH_ABORT,
     DATA_ABORT,
 };
+
+void install_handler(uint8_t irq, IRQHandler& handler)
+{
+    ASSERT(!irq_handlers[irq]);
+    irq_handlers[irq] = &handler;
+}
+
+void remove_handler(uint8_t irq)
+{
+    ASSERT(irq_handlers[irq]);
+    irq_handlers[irq] = nullptr;
+}
 
 [[noreturn]] static void kpanic(const ExceptionType& type, const register_dump& regs)
 {
@@ -100,4 +116,12 @@ extern "C" void data_abort_handler(const register_dump& regs)
         kprintf("Argh! We crashed in Kernel Mode!\n");
         kpanic(ExceptionType::DATA_ABORT, regs);
     }
+}
+
+extern "C" void handle_irq(const register_dump& regs)
+{
+    uint16_t irqn = GIC::interrupt_id();
+
+    kprintf("IRQ %d received!\n", irqn);
+    GIC::eoi(irqn);
 }
