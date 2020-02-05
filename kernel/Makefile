@@ -11,6 +11,7 @@ CXX_OBJS = \
 	arch/arm/gic.o \
 	kstdlib/kstring.o \
 	kstdlib/kprintf.o \
+	device/timer.o \
 	device/uart.o \
 	mem/physmem.o \
 	mem/virtmem.o \
