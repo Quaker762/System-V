@@ -74,7 +74,8 @@ void Timer::disable()
 
 void Timer::handle_irq()
 {
-    kprintf("Tick!\n");
+    kprintf("Tick! 0x%x\n");
+    register_write(TIMER_INT_CLR, 0xffffffff);
 }
 
 ////////////////////////////////////////////////////////////////////////
