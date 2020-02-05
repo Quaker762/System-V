@@ -4,7 +4,7 @@
 #include <kernel/arch/arm/gic.h>
 #include <kernel/kstdlib/kstdio.h>
 
-#define GIC_DEBUG
+//#define GIC_DEBUG
 
 static constexpr uintptr_t GIC_BASE = 0x2c000000;
 static constexpr uintptr_t GIC_DIST_BASE = 0x2c001000;
