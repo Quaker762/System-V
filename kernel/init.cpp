@@ -7,6 +7,7 @@
  */
 #include "arch/arm/cpu.h"
 
+#include <kernel/arch/arm/gic.h>
 #include <kernel/assertions.h>
 #include <kernel/device/uart.h>
 #include <kernel/kstdlib/kstdio.h>
@@ -25,6 +26,8 @@ init()
     relocate_vector_table();
 
     MemoryManager::init();
+    GIC::initialize();
+    sti();
 
     kprintf("entering hang...system halted");
     for(;;) {}

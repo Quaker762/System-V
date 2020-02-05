@@ -44,8 +44,21 @@ SECTIONS {
 
     . = ALIGN(4K);
     __KERNEL_STACK_BASE = .;
-    . += 0x1000;
+    . += 0x8000;
     __KERNEL_STACK_TOP = .;
+
+    __ABORT_STACK_BASE = .;
+    . += 0x1000;
+    __ABORT_STACK_TOP = .;
+
+    __UNDEFINED_STACK_BASE = .;
+    . += 0x1000;
+    __UNDEFINED_STACK_TOP = .;
+
+    __IRQ_STACK_BASE = .;
+    . += 0x1000;
+    __IRQ_STACK_TOP = .;
+
     __PMM_BITMAP = .;
     . += 0x1000;
     __FREE_RAM_START = .;
