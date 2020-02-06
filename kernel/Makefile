@@ -16,6 +16,7 @@ CXX_OBJS = \
 	mem/physmem.o \
 	mem/virtmem.o \
 	irqhandler.o \
+	device/keyboard.o \
 	init.o
 
 ASM=arm-none-eabi-as
