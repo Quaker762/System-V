@@ -7,7 +7,7 @@
 #include <stdint.h>
 
 static constexpr uint8_t KMI0_IRQ = 44;
-static constexpr uint8_t KMI1_IRQ = 45;
+//static constexpr uint8_t KMI1_IRQ = 45;
 
 static constexpr uintptr_t PL050_BASE_ADDRESS = 0x1c060000; // 0x1c070000
 
@@ -50,6 +50,7 @@ public:
     Keyboard()
     : IRQHandler(KMI0_IRQ) {}
     void enable() const;
+    void disable() const;
 
     void handle_irq();
 
@@ -61,4 +62,22 @@ private:
     void unset_control_bit(KeyboardControlBit) const;
 
     bool read_status_bit(KeyboardStatusBit) const;
+
+private:
+    bool m_capslock { false };
+    bool m_lshift { false };
+    bool m_rshift { false };
+    bool m_lctr { false };
+    bool m_rctr { false };
+    bool m_lgui { false };
+    bool m_rgui { false };
+    bool m_lalt { false };
+    bool m_ralt { false };
+
+    // Currently we ignore scroll lock and assume numlock is always on
+    //bool m_scrllock { false };
+    //bool m_numlock { false };
+
+    bool m_secondary_signal { false };
+    bool m_release_signal { false };
 };
