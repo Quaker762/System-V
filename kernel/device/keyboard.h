@@ -4,6 +4,7 @@
 #pragma once
 
 #include <kernel/irqhandler.h>
+#include <kernel/mem/heap.h>
 #include <stdint.h>
 
 static constexpr uint8_t KMI0_IRQ = 44;
@@ -46,9 +47,14 @@ enum class KeyboardInterruptIDBit : uint8_t
 
 class Keyboard : public IRQHandler
 {
+    OBJ_PERMANENT
 public:
     Keyboard()
-    : IRQHandler(KMI0_IRQ) {}
+    : IRQHandler(KMI0_IRQ)
+    {
+        m_instance = this;
+        this->enable();
+    }
     void enable() const;
     void disable() const;
 
@@ -62,6 +68,8 @@ private:
     void unset_control_bit(KeyboardControlBit) const;
 
     bool read_status_bit(KeyboardStatusBit) const;
+
+    const Keyboard& obj_instance() const { return *m_instance; }
 
 private:
     bool m_capslock { false };
@@ -80,4 +88,6 @@ private:
 
     bool m_secondary_signal { false };
     bool m_release_signal { false };
+
+    Keyboard* m_instance { nullptr };
 };

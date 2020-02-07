@@ -27,11 +27,11 @@ init()
     relocate_vector_table();
 
     MemoryManager::init();
+    kmalloc_init();
     GIC::initialize();
     sti();
 
-    Keyboard kb = Keyboard();
-    kb.enable();
+    new Keyboard();
 
     kprintf("entering hang...system halted\n");
     for(;;) {}
