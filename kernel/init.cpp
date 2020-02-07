@@ -9,6 +9,7 @@
 
 #include <kernel/arch/arm/gic.h>
 #include <kernel/assertions.h>
+#include <kernel/device/keyboard.h>
 #include <kernel/device/uart.h>
 #include <kernel/kstdlib/kstdio.h>
 #include <kernel/mem/address.h>
@@ -29,6 +30,9 @@ init()
     GIC::initialize();
     sti();
 
-    kprintf("entering hang...system halted");
+    Keyboard kb = Keyboard();
+    kb.enable();
+
+    kprintf("entering hang...system halted\n");
     for(;;) {}
 }
