@@ -16,6 +16,7 @@ CXX_OBJS = \
 	device/timer.o \
 	device/uart.o \
 	fs/file.o \
+	mem/heap.o \
 	mem/physmem.o \
 	mem/virtmem.o \
 	irqhandler.o \

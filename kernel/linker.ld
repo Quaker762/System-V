@@ -59,6 +59,9 @@ SECTIONS {
     . += 0x1000;
     __IRQ_STACK_TOP = .;
 
+    __KMALLOC_BASE = .;
+    . += 4M;
+
     __PMM_BITMAP = .;
     . += 0x1000;
     __FREE_RAM_START = .;
