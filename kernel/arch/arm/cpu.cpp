@@ -75,6 +75,7 @@ void remove_handler(uint8_t irq)
             break;
     }
 
+    cli();
     kprintf("System halted\n");
     for(;;)
         ;
