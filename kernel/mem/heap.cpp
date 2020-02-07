@@ -1,6 +1,7 @@
 /**
  * 
  */
+#include <kernel/arch/arm/cpu.h>
 #include <kernel/assertions.h>
 #include <kernel/kstdlib/kstdio.h>
 #include <kernel/mem/heap.h>
@@ -26,6 +27,14 @@ void kmalloc_init()
 
 void* kmalloc_permanent(size_t size)
 {
+    if(kmalloc_permanent_ptr + size > kmalloc_permanent_ptr + kmalloc_permanent_size)
+    {
+        kprintf("kmalloc: Out of permanent memory space!!! What the fuck!?\n");
+        cli();
+        for(;;)
+            ;
+    }
+
     void* ptr = kmalloc_permanent_ptr;
 #ifdef KMALLOC_DEBUG
     kprintf("kmalloc_permanent: handing out pointer @ 0x%x, size %d\n", reinterpret_cast<uint32_t>(ptr), size);
