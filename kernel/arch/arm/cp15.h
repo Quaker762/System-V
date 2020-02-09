@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include <kernel/arch/arm/cpu.h>
 #include <stdint.h>
 
 /**
@@ -144,7 +145,7 @@ void set_SCTLR_flag(SCTLRFlag flag);
 void unset_SCTLR_flag(SCTLRFlag flag);
 bool get_SCTLR_flag(SCTLRFlag flag);
 
-static inline void set_TTBR0(uint32_t address)
+static inline void set_TTBR0(L1TranslationTable* address)
 {
     __asm__ volatile("mcr p15, 0, %[value], c2, c0, 0"
                      :
