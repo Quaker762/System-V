@@ -4,6 +4,7 @@
 #include <common/assert.h>
 #include <kernel/kstdlib/kstdio.h>
 #include <kernel/mem/address.h>
+#include <kernel/mem/heap/heap.h>
 #include <kernel/mem/physmem.h>
 #include <mjlib/linkedlist.h>
 #include <stdint.h>
@@ -13,7 +14,6 @@ static size_t m_free_bytes = 0;
 static size_t m_free_blocks = 0;
 static size_t m_used_blocks = 0;
 
-extern uint32_t __PMM_BITMAP;
 extern uint32_t __RAM_START;
 extern uint32_t __RAM_END;
 
@@ -86,7 +86,7 @@ namespace MemoryManager
 
 void init()
 {
-    m_bitmap = &__PMM_BITMAP;
+    m_bitmap = reinterpret_cast<uint32_t*>(kmalloc_permanent(0x1000));
     m_free_bytes = reinterpret_cast<uint32_t>(&__RAM_END) - reinterpret_cast<uint32_t>(&__RAM_START);
     m_free_blocks = m_free_bytes / PMM_BLOCK_SIZE;
 

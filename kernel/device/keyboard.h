@@ -4,7 +4,7 @@
 #pragma once
 
 #include <kernel/irqhandler.h>
-#include <kernel/mem/heap.h>
+#include <kernel/mem/heap/heap.h>
 #include <stdint.h>
 
 static constexpr uint8_t KMI0_IRQ = 44;

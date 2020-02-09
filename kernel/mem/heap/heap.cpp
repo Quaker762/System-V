@@ -4,17 +4,19 @@
 #include <kernel/arch/arm/cpu.h>
 #include <kernel/assertions.h>
 #include <kernel/kstdlib/kstdio.h>
-#include <kernel/mem/heap.h>
+#include <kernel/mem/heap/heap.h>
 #include <stdint.h>
 
-//#define KMALLOC_DEBUG
+#define KMALLOC_DEBUG
 
-extern void* __KMALLOC_BASE;
+extern uintptr_t __KMALLOC_BASE;
 static void* kmalloc_ptr = nullptr;
 static void* kmalloc_permanent_ptr = nullptr;
 
 static constexpr size_t kmalloc_size = 2 * (1024 * 1024);
 static constexpr size_t kmalloc_permanent_size = kmalloc_size;
+
+/////////////////////////////////////////////////////////////////////////////////
 
 void kmalloc_init()
 {
