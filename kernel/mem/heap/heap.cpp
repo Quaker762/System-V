@@ -29,7 +29,7 @@ void kmalloc_init()
 
 void* kmalloc_permanent(size_t size)
 {
-    if(kmalloc_permanent_ptr + size > kmalloc_permanent_ptr + kmalloc_permanent_size)
+    if(reinterpret_cast<uint8_t*>(kmalloc_permanent_ptr) + size > reinterpret_cast<uint8_t*>(kmalloc_permanent_ptr) + kmalloc_permanent_size)
     {
         kprintf("kmalloc: Out of permanent memory space!!! What the fuck!?\n");
         cli();
@@ -41,7 +41,7 @@ void* kmalloc_permanent(size_t size)
 #ifdef KMALLOC_DEBUG
     kprintf("kmalloc_permanent: handing out pointer @ 0x%x, size %d\n", reinterpret_cast<uint32_t>(ptr), size);
 #endif
-    kmalloc_permanent_ptr = ptr + size;
+    kmalloc_permanent_ptr = reinterpret_cast<uint8_t*>(ptr) + size;
 
     return ptr;
 }

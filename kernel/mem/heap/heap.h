@@ -14,6 +14,6 @@ private:
 
 void kmalloc_init();
 
-void* kmalloc_permanent(size_t) __attribute__((malloc));
-void* kmalloc(size_t) __attribute__((malloc));
-void* kmalloc_aligned(size_t) __attribute__((malloc));
+[[gnu::nonnull]] void* kmalloc_permanent(size_t) __attribute__((malloc));
+[[gnu::nonnull]] void* kmalloc(size_t) __attribute__((malloc));
+[[gnu::nonnull]] void* kmalloc_aligned(size_t) __attribute__((malloc));
