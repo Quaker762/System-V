@@ -26,8 +26,9 @@ init()
     kprintf("Relocating vector table to 0x%x...\n", reinterpret_cast<uint32_t>(&vector_table));
     relocate_vector_table();
 
-    MemoryManager::init();
     kmalloc_init();
+
+    MemoryManager::init();
     GIC::initialize();
     sti();
 

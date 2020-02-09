@@ -62,8 +62,6 @@ SECTIONS {
     __KMALLOC_BASE = .;
     . += 4M;
 
-    __PMM_BITMAP = .;
-    . += 0x1000;
     __FREE_RAM_START = .;
 
     . = 0x100000000;
