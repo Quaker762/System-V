@@ -4,62 +4,44 @@
 #pragma once
 
 #include <kernel/arch/arm/cp15.h>
-#include <kernel/kstdlib/kstring.h>
-#include <kernel/mem/address.h>
+#include <kernel/arch/arm/cpu.h>
+#include <kernel/mem/heap/heap.h>
 #include <kernel/mem/physmem.h>
 #include <stddef.h>
 #include <stdint.h>
 
-static constexpr uint32_t ENTIRES_PER_L2_TRANSLATION_TABLE = 256;
-static constexpr uint32_t ENTIRES_PER_L1_TRANSLATION_TABLE = 4096;
-static constexpr uint32_t PAGE_SIZE = 4096;
+class VirtMemoryManager
+{
+    OBJ_PERMANENT
+public:
+    VirtMemoryManager() {}
 
-union L1TableEntry {
-    struct
+    inline void switch_L1_translation_table(L1TranslationTable* table)
     {
-        uint32_t always_1 : 1;
-        uint32_t always_0 : 1;
-        uint32_t pxn : 1;
-        uint32_t ns : 1;
-        uint32_t sbz : 1;
-        uint32_t domain : 4;
-        uint32_t unused : 1;
-        uint32_t table_base_address : 22;
-    };
-    uint32_t entry;
-};
+        CPU::set_TTBR0(table);
+    }
 
-union L2TableEntry {
-    struct
+    inline L1TranslationTable* allocate_L1_translation_table()
     {
-        uint32_t xn : 1;
-        uint32_t always_1 : 1;
-        uint32_t b : 1;
-        uint32_t c : 1;
-        uint32_t ap_lo : 2;
-        uint32_t tex : 3;
-        uint32_t ap_hi : 1;
-        uint32_t s : 1;
-        uint32_t nG : 1;
-        uint32_t page_base_address : 20;
-    };
-    uint32_t entry;
+        return reinterpret_cast<L1TranslationTable*>(PhysicalMemoryManager::obj_instance().allocate_16kb_aligned_page());
+    }
+
+    void initialise_L1_translation_table(L1TranslationTable&);
+    void initialise_L2_translation_table(L2TranslationTable&);
+
+private:
+    inline uint16_t L1_translation_table_index(VirtualAddress address)
+    {
+        return address.get() >> 20;
+    }
+
+    inline uint8_t L2_translation_table_index(VirtualAddress address)
+    {
+        return (address.get() >> 12) & 0xFF;
+    }
+
+    inline uint16_t page_index(VirtualAddress address)
+    {
+        return address.get() & 0xFFF;
+    }
 };
-
-struct L2TranslationTable
-{
-    L2TableEntry entries[ENTIRES_PER_L2_TRANSLATION_TABLE];
-};
-
-struct L1TranslationTable
-{
-    L1TableEntry entries[ENTIRES_PER_L1_TRANSLATION_TABLE];
-};
-
-namespace VirtMemoryManager
-{
-
-L1TranslationTable* allocate_L1_translation_table();
-void switch_L1_translation_table(L1TranslationTable* table);
-
-} // namespace VirtMemoryManager

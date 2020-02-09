@@ -2,6 +2,7 @@
 
 #include "assertions.h"
 
+#include <kernel/arch/arm/cp15.h>
 #include <kernel/arch/arm/gic.h>
 #include <kernel/irqhandler.h>
 #include <kernel/kstdlib/kstdio.h>

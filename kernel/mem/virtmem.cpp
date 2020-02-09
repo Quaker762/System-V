@@ -1,34 +1,35 @@
 /**
  * 
  */
+#include <kernel/mem/address.h>
 #include <kernel/mem/virtmem.h>
 
-namespace VirtMemoryManager
+void VirtMemoryManager::initialise_L1_translation_table(L1TranslationTable& table)
 {
-
-static uint16_t L1_translation_table_index(VirtualAddress address)
-{
-    return address.get() >> 20;
+    for(uint32_t i = 0; i < ENTIRES_PER_L1_TRANSLATION_TABLE; ++i)
+    {
+        table.entries[i].always_1 = 0b1;
+        table.entries[i].always_0 = 0b0;
+        table.entries[i].pxn = 0b0;
+        table.entries[i].ns = 0b0;
+        table.entries[i].sbz = 0b0;
+        table.entries[i].domain = 0b0000;
+        table.entries[i].unused = 0b0;
+    }
 }
 
-static uint8_t L2_translation_table_index(VirtualAddress address)
+void VirtMemoryManager::initialise_L2_translation_table(L2TranslationTable& table)
 {
-    return (address.get() >> 12) & 0xFF;
+    for(uint32_t i = 0; i < ENTIRES_PER_L2_TRANSLATION_TABLE; ++i)
+    {
+        table.entries[i].xn = 0b0;
+        table.entries[i].always_1 = 0b1;
+        table.entries[i].b = 0b0;
+        table.entries[i].c = 0b0;
+        table.entries[i].ap_lo = 0b11;
+        table.entries[i].tex = 0b000;
+        table.entries[i].ap_hi = 0b0;
+        table.entries[i].s = 0b0;
+        table.entries[i].nG = 0b0;
+    }
 }
-
-static uint16_t page_index(VirtualAddress address)
-{
-    return address.get() & 0xFFF;
-}
-
-void switch_L1_translation_table(L1TranslationTable* table)
-{
-    CPU::set_TTBR0(reinterpret_cast<uint32_t>(table));
-}
-
-L1TranslationTable* allocate_L1_translation_table()
-{
-    return reinterpret_cast<L1TranslationTable*>(PhysicalMemoryManager::obj_instance().allocate_16kb_aligned_page());
-}
-
-} // namespace VirtMemoryManager
