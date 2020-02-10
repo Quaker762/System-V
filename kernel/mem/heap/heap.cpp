@@ -4,6 +4,7 @@
 #include <kernel/arch/arm/cpu.h>
 #include <kernel/assertions.h>
 #include <kernel/kstdlib/kstdio.h>
+#include <kernel/mem/heap/blocklist.h>
 #include <kernel/mem/heap/heap.h>
 #include <stdint.h>
 
@@ -25,6 +26,7 @@ void kmalloc_init()
 #endif
     kmalloc_ptr = reinterpret_cast<void*>(&__KMALLOC_BASE);
     kmalloc_permanent_ptr = reinterpret_cast<void*>(&__KMALLOC_BASE + kmalloc_size);
+    heap_list_init(kmalloc_ptr);
 }
 
 void* kmalloc_permanent(size_t size)
@@ -46,12 +48,17 @@ void* kmalloc_permanent(size_t size)
     return ptr;
 }
 
-void* kmalloc(size_t)
+void* kmalloc(size_t alloc_size)
 {
-    ASSERT_NOT_REACHED();
+    return heap_list_alloc(alloc_size);
 }
 
 void* kmalloc_aligned(size_t)
 {
     ASSERT_NOT_REACHED();
+}
+
+void kfree(void* ptr)
+{
+    heap_list_free(ptr);
 }
