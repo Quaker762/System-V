@@ -28,7 +28,7 @@ init()
 
     kmalloc_init();
 
-    MemoryManager::init();
+    new PhysicalMemoryManager();
     GIC::initialize();
     sti();
 

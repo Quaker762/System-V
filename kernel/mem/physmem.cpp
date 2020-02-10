@@ -6,41 +6,25 @@
 #include <kernel/mem/address.h>
 #include <kernel/mem/heap/heap.h>
 #include <kernel/mem/physmem.h>
-#include <mjlib/linkedlist.h>
 #include <stdint.h>
-
-static uint32_t* m_bitmap = 0;
-static size_t m_free_bytes = 0;
-static size_t m_free_blocks = 0;
-static size_t m_used_blocks = 0;
 
 extern uint32_t __RAM_START;
 extern uint32_t __RAM_END;
 
-static MJ::LinkedList<MemoryManager::Page1k> page_list_1k;
+static PhysicalMemoryManager* m_instance;
 
 #define PMM_DEBUG
 
-static inline void bitmap_set_bit(uint32_t bit)
+PhysicalMemoryManager& PhysicalMemoryManager::obj_instance()
 {
-    m_bitmap[bit / 32] |= (1 << (bit % 32));
+    return *m_instance;
 }
 
-static inline void bitmap_clear_bit(uint32_t bit)
+uint32_t PhysicalMemoryManager::find_first_free_bit()
 {
-    m_bitmap[bit / 32] &= ~(1 << (bit % 32));
-}
-
-static inline bool bitmap_test_bit(uint32_t bit)
-{
-    return static_cast<bool>(m_bitmap[bit / 32] & (1 << (bit % 32)));
-}
-
-static uint32_t find_first_free_bit()
-{
-    for(size_t i = 0; i < m_free_blocks / 32; i++)
+    for(size_t i = 0; i < m_free_pages / 32; i++)
     {
-        if(m_bitmap[i] == MemoryManager::PMM_REGION_FULL)
+        if(m_bitmap[i] == PMM_REGION_FULL)
             continue;
 
         for(int j = 0; j < 32; j++)
@@ -57,11 +41,11 @@ static uint32_t find_first_free_bit()
 }
 
 // This is a bit of a hack...
-static uint32_t find_16k_aligned_bit()
+uint32_t PhysicalMemoryManager::find_16k_aligned_bit()
 {
-    for(size_t i = 0; i < m_free_blocks / 32; i++)
+    for(size_t i = 0; i < m_free_pages / 32; i++)
     {
-        if(m_bitmap[i] == MemoryManager::PMM_REGION_FULL)
+        if(m_bitmap[i] == PMM_REGION_FULL)
             continue;
 
         for(int j = 0; j < 32; j++)
@@ -69,7 +53,7 @@ static uint32_t find_16k_aligned_bit()
             if(m_bitmap[i] & (1 << j))
                 continue;
 
-            uint32_t addr = reinterpret_cast<uint32_t>(&__RAM_START) + ((i * 32) + j) * MemoryManager::PMM_BLOCK_SIZE;
+            uint32_t addr = reinterpret_cast<uint32_t>(&__RAM_START) + ((i * 32) + j) * PMM_BLOCK_SIZE;
             if((addr & 0x3fff) != 0)
                 continue;
 
@@ -81,19 +65,22 @@ static uint32_t find_16k_aligned_bit()
     ASSERT_NOT_REACHED();
 }
 
-namespace MemoryManager
+PhysicalMemoryManager::PhysicalMemoryManager()
 {
+    init();
+    m_instance = this;
+}
 
-void init()
+void PhysicalMemoryManager::init()
 {
     m_bitmap = reinterpret_cast<uint32_t*>(kmalloc_permanent(0x1000));
     m_free_bytes = reinterpret_cast<uint32_t>(&__RAM_END) - reinterpret_cast<uint32_t>(&__RAM_START);
-    m_free_blocks = m_free_bytes / PMM_BLOCK_SIZE;
+    m_free_pages = m_free_bytes / PMM_BLOCK_SIZE;
 
-    kprintf("pmm: Intialised with %d free blocks\n", m_free_blocks);
+    kprintf("pmm: Intialised with %d free pages\n", m_free_pages);
 }
 
-void* allocate_physical_page()
+void* PhysicalMemoryManager::allocate_physical_page()
 {
     uint32_t bit = find_first_free_bit();
     bitmap_set_bit(bit);
@@ -104,12 +91,12 @@ void* allocate_physical_page()
     kprintf("pmm: found a free block at 0x%x\n", block);
 #endif
 
-    m_used_blocks--;
-    m_used_blocks++;
+    m_used_pages--;
+    m_used_pages++;
     return block;
 }
 
-void free_page(void* ptr)
+void PhysicalMemoryManager::free_page(void* ptr)
 {
     PhysicalAddress paddr(reinterpret_cast<uint32_t>(ptr));
     int frame = paddr.get() / PMM_BLOCK_SIZE;
@@ -119,11 +106,11 @@ void free_page(void* ptr)
 #endif
 
     bitmap_clear_bit(frame);
-    m_free_blocks++;
-    m_used_blocks--;
+    m_free_pages++;
+    m_used_pages--;
 }
 
-void* allocate_16kb_aligned_page()
+void* PhysicalMemoryManager::allocate_16kb_aligned_page()
 {
     uint32_t bit = find_16k_aligned_bit();
     bitmap_set_bit(bit);
@@ -136,12 +123,12 @@ void* allocate_16kb_aligned_page()
     kprintf("pmm: found a free block at 0x%x\n", block);
 #endif
 
-    m_free_blocks--;
-    m_used_blocks++;
+    m_free_pages--;
+    m_used_pages++;
     return block;
 }
 
-void* allocate_1k_page()
+void* PhysicalMemoryManager::allocate_1k_page()
 {
     // Let's make some pages!
     if(page_list_1k.empty())
@@ -170,7 +157,7 @@ void* allocate_1k_page()
 
 // Note: There's currently no way to reclaim a 4k page (and thus free it) if all
 // of the 1k pages are free. Once 4 1k pages are created, they are permanently 1k pages!
-void free_1k_page(void* ptr)
+void PhysicalMemoryManager::free_1k_page(void* ptr)
 {
     PhysicalAddress addr = PhysicalAddress(reinterpret_cast<uint32_t>(ptr));
 
@@ -180,5 +167,3 @@ void free_1k_page(void* ptr)
 
     page_list_1k.insert(reinterpret_cast<Page1k*>(addr.get()));
 }
-
-} // namespace MemoryManager

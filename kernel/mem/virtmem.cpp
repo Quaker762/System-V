@@ -28,7 +28,7 @@ void switch_L1_translation_table(L1TranslationTable* table)
 
 L1TranslationTable* allocate_L1_translation_table()
 {
-    return reinterpret_cast<L1TranslationTable*>(MemoryManager::allocate_16kb_aligned_page());
+    return reinterpret_cast<L1TranslationTable*>(PhysicalMemoryManager::obj_instance().allocate_16kb_aligned_page());
 }
 
 } // namespace VirtMemoryManager
