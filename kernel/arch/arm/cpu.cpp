@@ -119,7 +119,7 @@ extern "C" void data_abort_handler(const register_dump& regs)
     }
 }
 
-extern "C" void handle_irq(const register_dump& regs)
+extern "C" void handle_irq(const register_dump&)
 {
     uint16_t irqn = GIC::interrupt_id() & 0xff;
 
