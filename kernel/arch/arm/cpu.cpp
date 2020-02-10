@@ -34,7 +34,7 @@ void remove_handler(uint8_t irq)
     irq_handlers[irq] = nullptr;
 }
 
-[[noreturn]] static void kpanic(const ExceptionType& type, const register_dump& regs)
+[[noreturn]] static void kpanic(const ExceptionType& type, const RegisterDump& regs)
 {
     uint32_t ifsr = CPU::get_IFSR();
     uint32_t dfsr = CPU::get_DFSR();
@@ -83,7 +83,7 @@ void remove_handler(uint8_t irq)
 
 // This handles the UNDEFINED exception. Illegal Instruction
 // is a better term for this imho
-extern "C" void illegal_instruction_handler(const register_dump& regs)
+extern "C" void illegal_instruction_handler(const RegisterDump& regs)
 {
     StatusRegister spsr;
 
@@ -95,7 +95,7 @@ extern "C" void illegal_instruction_handler(const register_dump& regs)
     }
 }
 
-extern "C" void prefetch_abort_handler(const register_dump& regs)
+extern "C" void prefetch_abort_handler(const RegisterDump& regs)
 {
     StatusRegister spsr;
 
@@ -107,7 +107,7 @@ extern "C" void prefetch_abort_handler(const register_dump& regs)
     }
 }
 
-extern "C" void data_abort_handler(const register_dump& regs)
+extern "C" void data_abort_handler(const RegisterDump& regs)
 {
     StatusRegister spsr;
 
@@ -119,7 +119,7 @@ extern "C" void data_abort_handler(const register_dump& regs)
     }
 }
 
-extern "C" void handle_irq(const register_dump&)
+extern "C" void handle_irq(const RegisterDump&)
 {
     uint16_t irqn = GIC::interrupt_id() & 0xff;
 
