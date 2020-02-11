@@ -695,12 +695,12 @@ int Keyboard::close()
     return 0;
 }
 
-size_t Keyboard::write(const uint8_t*, size_t, size_t)
+size_t Keyboard::write(FileDescription&, size_t, size_t)
 {
     return 0;
 }
 
-size_t Keyboard::read(uint8_t*, size_t, size_t)
+size_t Keyboard::read(FileDescription&, size_t, size_t)
 {
     return 1;
 }

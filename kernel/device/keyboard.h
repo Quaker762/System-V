@@ -63,8 +63,8 @@ public:
 
     int open(uint32_t) override;
     int close() override;
-    size_t write(const uint8_t*, size_t, size_t) override;
-    size_t read(uint8_t*, size_t size, size_t pos) override;
+    size_t write(FileDescription&, size_t, size_t) override;
+    size_t read(FileDescription&, size_t size, size_t pos) override;
 
 private:
     void register_write(uint8_t, uint8_t) const;

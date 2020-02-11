@@ -5,8 +5,11 @@
  */
 #pragma once
 
+#include <kernel/fs/filedescription.h>
 #include <stddef.h>
 #include <stdint.h>
+
+class FileDescription;
 
 class File
 {
@@ -21,12 +24,14 @@ public:
         LINK
     };
 
+    // FIXME: Open should actually return a FileDescription/FileDescriptor object that actually tracks
+    // the state of the File Descriptor, can seek it etc
 protected:
     virtual ~File();
     virtual int open(uint32_t) = 0;
     virtual int close() = 0;
-    virtual size_t write(const uint8_t*, size_t size, size_t pos) = 0;
-    virtual size_t read(uint8_t*, size_t size, size_t pos) = 0;
+    virtual size_t write(FileDescription&, size_t size, size_t pos) = 0;
+    virtual size_t read(FileDescription&, size_t size, size_t pos) = 0;
     //void int ioctl() // What the fuck is the prototype for this?!!
 
     Type type() const { return m_type; }
