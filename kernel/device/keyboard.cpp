@@ -685,6 +685,26 @@ void Keyboard::disable() const
     unset_control_bit(KeyboardControlBit::KMIRXINTREN);
 }
 
+int Keyboard::open(uint32_t)
+{
+    return 0;
+}
+
+int Keyboard::close()
+{
+    return 0;
+}
+
+size_t Keyboard::write(const uint8_t*, size_t, size_t)
+{
+    return 0;
+}
+
+size_t Keyboard::read(uint8_t*, size_t, size_t)
+{
+    return 1;
+}
+
 ///////////////////////////////////////////////
 
 void Keyboard::register_write(uint8_t reg, uint8_t value) const

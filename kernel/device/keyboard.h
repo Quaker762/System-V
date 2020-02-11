@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include <kernel/device/chardevice.h>
 #include <kernel/irqhandler.h>
 #include <kernel/mem/heap/heap.h>
 #include <stdint.h>
@@ -45,12 +46,12 @@ enum class KeyboardInterruptIDBit : uint8_t
     KMITXINTR = 0x02
 };
 
-class Keyboard : public IRQHandler
+class Keyboard : public IRQHandler, public CharacterDevice
 {
     OBJ_PERMANENT
 public:
     Keyboard()
-    : IRQHandler(KMI0_IRQ)
+    : IRQHandler(KMI0_IRQ), CharacterDevice(1, 0)
     {
         m_instance = this;
         this->enable();
@@ -59,6 +60,11 @@ public:
     void disable() const;
 
     void handle_irq();
+
+    int open(uint32_t) override;
+    int close() override;
+    size_t write(const uint8_t*, size_t, size_t) override;
+    size_t read(uint8_t*, size_t size, size_t pos) override;
 
 private:
     void register_write(uint8_t, uint8_t) const;
