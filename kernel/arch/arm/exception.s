@@ -20,7 +20,7 @@ vector_table:
 vector_table:
     ldr pc, =_start
     b illegal_instruction_trampoline
-    b .
+    b svc_trap
     b prefetch_abort_trampoline
     b data_abort_trampoline
     b .
@@ -109,5 +109,25 @@ irq_trampoline:
 
     # Jump to the C irq handler
     bl handle_irq
+    add sp, sp, #4
+    ldmfd sp!, {r0-r12, pc}^
+
+.extern syscall_handler
+svc_trap:
+    // Okay, so at this point, r0-r3 contains syscall arguments.
+    // These are put here by the CPU automagically, which is
+    // nice!
+    // However, we have to load up the syscall number by extracting
+    // it from the instruction found in the link register minus 4
+    ldr r4, [lr, #-4]
+    bic r4, r4, #0xff000000
+
+    stmfd sp!, {r0-r12, lr} // Save some state
+    mrs r0, spsr
+    stmfd sp!, {r0}
+
+    mov r0, sp
+    bl syscall_handler
+
     add sp, sp, #4
     ldmfd sp!, {r0-r12, pc}^

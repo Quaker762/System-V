@@ -9,6 +9,7 @@ CXX_OBJS = \
 	arch/arm/cpu.o \
 	arch/arm/cp15.o \
 	arch/arm/gic.o \
+	arch/arm/syscall.o \
 	kstdlib/kstring.o \
 	kstdlib/kprintf.o \
 	device/chardevice.o \
