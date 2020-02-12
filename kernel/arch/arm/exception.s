@@ -105,10 +105,20 @@ irq_trampoline:
     stmfd sp!, {r0-r12, lr}
     mrs r0, spsr
     stmfd sp!, {r0}
-    mov r0, sp
+
+    # Now let's disable interrupts (so we don't have a storm of them)
+    mrs r0, cpsr
+    orr r0, r0, #0x80
+    msr cpsr, r0
 
     # Jump to the C irq handler
+    mov r0, sp
     bl handle_irq
+
+    # Re-enable interrupts and return to whatever was happening before
+    mrs r0, cpsr
+    bic r0, #0x80
+    msr cpsr, r0
     add sp, sp, #4
     ldmfd sp!, {r0-r12, pc}^
 
