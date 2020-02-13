@@ -72,7 +72,7 @@ void Timer::disable()
     unset_control_bit(TimerControlBits::ENABLE);
 }
 
-void Timer::handle_irq()
+void Timer::handle_irq(RegisterDump&)
 {
     kprintf("Tick! 0x%x\n");
     register_write(TIMER_INT_CLR, 0xffffffff);

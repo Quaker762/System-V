@@ -551,7 +551,7 @@ static constexpr char RCTRL = 0x14;
 static constexpr char LGUI = 0x1f;
 static constexpr char RGUI = 0x27;
 
-void Keyboard::handle_irq()
+void Keyboard::handle_irq(RegisterDump&)
 {
     // Wait for the reciever register to populate before reading
     while((register_read(KMISTAT) & static_cast<uint8_t>(KeyboardStatusBit::RXFULL)) == 0) {}

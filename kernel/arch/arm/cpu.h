@@ -57,6 +57,8 @@ public:
     }
 };
 
+class IRQHandler;
+
 void install_handler(uint8_t, IRQHandler&);
 void remove_handler(uint8_t);
 

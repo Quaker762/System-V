@@ -59,7 +59,7 @@ public:
     void enable() const;
     void disable() const;
 
-    void handle_irq();
+    void handle_irq(RegisterDump&);
 
     int open(uint32_t) override;
     int close() override;

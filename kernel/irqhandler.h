@@ -3,13 +3,16 @@
  */
 #pragma once
 
+#include <kernel/arch/arm/cpu.h>
 #include <stdint.h>
+
+struct RegisterDump;
 
 class IRQHandler
 {
 public:
     virtual ~IRQHandler();
-    virtual void handle_irq() = 0; // This is pure virtual, and needs to be implemented in the driver
+    virtual void handle_irq(RegisterDump&) = 0; // This is pure virtual, and needs to be implemented in the driver
 
 protected:
     IRQHandler(uint8_t irq);

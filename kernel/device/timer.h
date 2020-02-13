@@ -49,7 +49,7 @@ public:
     uint32_t read_value() const;
     uint8_t control() const;
 
-    void handle_irq();
+    void handle_irq(RegisterDump&);
 
 private:
     void register_write(uint8_t, uint32_t) const;
