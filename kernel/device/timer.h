@@ -17,7 +17,7 @@
 static constexpr uint8_t TIM01_IRQ = 34;
 static constexpr uint8_t TIM23_IRQ = 35;
 
-enum class TimerBaseAdddress : uintptr_t
+enum class TimerBaseAddress : uintptr_t
 {
     TIMER0 = 0x1c110000,
     TIMER1 = 0x10010020,
@@ -39,7 +39,7 @@ enum class TimerControlBits : uint8_t
 class Timer : public IRQHandler
 {
 public:
-    Timer(TimerBaseAdddress);
+    Timer(TimerBaseAddress);
 
     void load(uint32_t) const;
     void enable();

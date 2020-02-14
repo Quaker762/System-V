@@ -9,25 +9,25 @@
 
 const char* Timer::timer_name() const
 {
-    TimerBaseAdddress addr = static_cast<TimerBaseAdddress>(m_base_address);
+    TimerBaseAddress addr = static_cast<TimerBaseAddress>(m_base_address);
 
     switch(addr)
     {
-        case TimerBaseAdddress::TIMER0:
+        case TimerBaseAddress::TIMER0:
             return "TIMER0";
-        case TimerBaseAdddress::TIMER1:
+        case TimerBaseAddress::TIMER1:
             return "TIMER1";
-        case TimerBaseAdddress::TIMER2:
+        case TimerBaseAddress::TIMER2:
             return "TIMER2";
-        case TimerBaseAdddress::TIMER3:
+        case TimerBaseAddress::TIMER3:
             return "TIMER3";
     }
 
     return "UNDEFINED";
 }
 
-Timer::Timer(TimerBaseAdddress timer)
-: IRQHandler((timer == TimerBaseAdddress::TIMER0 || timer == TimerBaseAdddress::TIMER1) ? TIM01_IRQ : TIM23_IRQ),
+Timer::Timer(TimerBaseAddress timer)
+: IRQHandler((timer == TimerBaseAddress::TIMER0 || timer == TimerBaseAddress::TIMER1) ? TIM01_IRQ : TIM23_IRQ),
   m_base_address(static_cast<uintptr_t>(timer))
 {
     kprintf("timer: creating timer with base address of 0x%x\n", static_cast<uint32_t>(timer));
