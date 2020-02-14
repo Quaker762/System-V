@@ -14,6 +14,7 @@ CXX_OBJS = \
 	kstdlib/kprintf.o \
 	device/chardevice.o \
 	device/device.o \
+	device/keyboard.o \
 	device/timer.o \
 	device/uart.o \
 	fs/file.o \
@@ -23,7 +24,7 @@ CXX_OBJS = \
 	mem/physmem.o \
 	mem/virtmem.o \
 	irqhandler.o \
-	device/keyboard.o \
+	process.o \
 	init.o
 
 ASM=arm-none-eabi-as
