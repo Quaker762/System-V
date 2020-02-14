@@ -100,16 +100,14 @@ data_abort_trampoline:
 
 .extern handle_irq
 irq_trampoline:
+    msr cpsr, #0x93 // Switch back to Kernel Mode (SVC) with interrupts disabled
+
     # Let's save all the registers before we enter the cpp function handler
-    SUB  lr, lr, #4 // Adjust LR as per table above
     stmfd sp!, {r0-r12, lr}
-    mrs r0, spsr
+    mrs r0, cpsr
     stmfd sp!, {r0}
 
-    # Now let's disable interrupts (so we don't have a storm of them)
-    mrs r0, cpsr
-    orr r0, r0, #0x80
-    msr cpsr, r0
+    push {sp} // Push the stack pointer to the regs list
 
     # Jump to the C irq handler
     mov r0, sp
@@ -119,6 +117,8 @@ irq_trampoline:
     mrs r0, cpsr
     bic r0, #0x80
     msr cpsr, r0
+
+    ldr sp, [sp]
     add sp, sp, #4
     ldmfd sp!, {r0-r12, pc}^
 
@@ -136,8 +136,10 @@ svc_trap:
     mrs r0, spsr
     stmfd sp!, {r0}
 
+    push {sp}
+
     mov r0, sp
     bl syscall_handler
 
-    add sp, sp, #4
+    add sp, sp, #8
     ldmfd sp!, {r0-r12, pc}^
