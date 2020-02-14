@@ -162,6 +162,11 @@ static inline uint32_t get_TTBR0()
     return address;
 }
 
+static inline void invalidate_unified_TLB()
+{
+    __asm__ volatile("mcr p15, 0, r0, c8, c7, 0");
+}
+
 /**
  * Currently we will just want to set this to 0x00000000, as we only plan on using TTBR0
  * Page 1725 of the manual shows the layout of this register
