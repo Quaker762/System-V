@@ -29,7 +29,7 @@ public:
     void* allocate_1k_page();
     void free_1k_page(void*);
     void* allocate_16kb_aligned_page();
-    void* allocate_region(size_t);
+    void* allocate_region(PhysicalAddress, size_t);
 
     static PhysicalMemoryManager& obj_instance();
 
