@@ -10,6 +10,7 @@
 
 extern uint32_t __RAM_START;
 extern uint32_t __RAM_END;
+extern uint32_t __FREE_RAM_START;
 
 static PhysicalMemoryManager* m_instance;
 
@@ -76,6 +77,10 @@ void PhysicalMemoryManager::init()
     m_bitmap = reinterpret_cast<uint32_t*>(kmalloc_permanent(0x1000));
     m_free_bytes = reinterpret_cast<uint32_t>(&__RAM_END) - reinterpret_cast<uint32_t>(&__RAM_START);
     m_free_pages = m_free_bytes / PMM_BLOCK_SIZE;
+
+    PhysicalAddress ram_start = PhysicalAddress(reinterpret_cast<uintptr_t>(&__RAM_START));
+    size_t kernel_size = reinterpret_cast<uint32_t>(&__FREE_RAM_START) - reinterpret_cast<uint32_t>(&__RAM_START);
+    allocate_region(ram_start, kernel_size);
 
     kprintf("pmm: Intialised with %d free pages\n", m_free_pages);
 }
@@ -166,4 +171,22 @@ void PhysicalMemoryManager::free_1k_page(void* ptr)
 #endif
 
     page_list_1k.insert(reinterpret_cast<Page1k*>(addr.get()));
+}
+
+void* PhysicalMemoryManager::allocate_region(PhysicalAddress base, size_t size)
+{
+    int blocks = size / PMM_BLOCK_SIZE;
+    int offset_base = base.get() - reinterpret_cast<uint32_t>(&__RAM_START);
+    int align = offset_base;
+    if(align)
+        align /= PMM_BLOCK_SIZE;
+
+    for(; blocks > 0; --blocks)
+    {
+        bitmap_set_bit(align++);
+        ++m_used_pages;
+        --m_free_pages;
+    }
+
+    return reinterpret_cast<void*>(base.get());
 }
