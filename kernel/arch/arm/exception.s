@@ -60,7 +60,8 @@ illegal_instruction_trampoline:
     # why here: https://electronics.stackexchange.com/questions/291548/undefined-exception-in-arm-processor
 
     # Let's save all the registers before we enter the cpp function handler
-    stmfd sp!, {r0-r12, lr}
+    stmfd sp, {r0-r12, sp, lr}
+    sub sp, sp, #60
     mrs r0, spsr
     stmfd sp!, {r0}
     mov r0, sp
@@ -68,13 +69,13 @@ illegal_instruction_trampoline:
     # Jump to the actual exception handler
     bl illegal_instruction_handler
     add sp, sp, #4 // Ignore the value of SPSR we pushed onto the stack
-    ldmfd sp!, {r0-r12, pc}^ // Return from exception
+    ldmfd sp, {r0-r12, sp, pc}^ // Return from exception
 
 .extern data_abort_handler
 prefetch_abort_trampoline:
     # Let's save all the registers before we enter the cpp function handler
-    SUB  lr, lr, #4 // Adjust LR as per table above
-    stmfd sp!, {r0-r12, lr}
+    stmfd sp, {r0-r12, sp, lr}
+    sub sp, sp, #60
     mrs r0, spsr
     stmfd sp!, {r0}
     mov r0, sp
@@ -82,45 +83,40 @@ prefetch_abort_trampoline:
     # Jump to the actual exception handler
     bl prefetch_abort_handler
     add sp, sp, #4 // Ignore the value of SPSR we pushed onto the stack
-    ldmfd sp!, {r0-r12, pc}^ // Return from exception
+    ldmfd sp, {r0-r12, sp, pc}^ // Return from exception
 
 .extern data_abort_handler
 data_abort_trampoline:
     # Let's save all the registers before we enter the cpp function handler
     SUB  lr, lr, #8 // Adjust LR as per table above
-    stmfd sp!, {r0-r12, lr}
+    stmfd sp, {r0-r12, sp, lr}
+    sub sp, sp, #60
     mrs r0, spsr
     stmfd sp!, {r0}
-    mov r0, sp
 
     # Jump to the actual exception handler
     bl data_abort_handler
     add sp, sp, #4 // Ignore the value of SPSR we pushed onto the stack
-    ldmfd sp!, {r0-r12, pc}^ // Return from exception
+    ldmfd sp, {r0-r12, sp, pc}^ // Return from exception
 
 .extern handle_irq
 irq_trampoline:
-    msr cpsr, #0x93 // Switch back to Kernel Mode (SVC) with interrupts disabled
+    msr cpsr, #0xD3 // Switch back to Kernel Mode (SVC) with interrupts disabled
+    mrs lr, lr_irq // We need to save this
+    sub lr, lr, #4
 
     # Let's save all the registers before we enter the cpp function handler
-    stmfd sp!, {r0-r12, lr}
+    stmfd sp, {r0-r12, sp, lr}
+    sub sp, sp, #60
     mrs r0, cpsr
     stmfd sp!, {r0}
-
-    push {sp} // Push the stack pointer to the regs list
 
     # Jump to the C irq handler
     mov r0, sp
     bl handle_irq
 
-    # Re-enable interrupts and return to whatever was happening before
-    mrs r0, cpsr
-    bic r0, #0x80
-    msr cpsr, r0
-
-    ldr sp, [sp]
     add sp, sp, #4
-    ldmfd sp!, {r0-r12, pc}^
+    ldmfd sp, {r0-r12, sp, pc}^
 
 .extern syscall_handler
 svc_trap:
@@ -132,14 +128,13 @@ svc_trap:
     ldr r4, [lr, #-4]
     bic r4, r4, #0xff000000
 
-    stmfd sp!, {r0-r12, lr} // Save some state
+    stmfd sp, {r0-r12, sp, lr}
+    sub sp, sp, #60
     mrs r0, spsr
     stmfd sp!, {r0}
-
-    push {sp}
 
     mov r0, sp
     bl syscall_handler
 
-    add sp, sp, #8
-    ldmfd sp!, {r0-r12, pc}^
+    add sp, sp, #4
+    ldmfd sp, {r0-r12, sp, pc}^
