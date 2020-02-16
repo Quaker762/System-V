@@ -21,6 +21,8 @@ public:
     bool operator>(const PhysicalAddress& rhs) { return m_addr > rhs.m_addr; }
     bool operator<(const PhysicalAddress& rhs) { return m_addr < rhs.m_addr; }
 
+    bool operator+=(const uint32_t& rhs) { return m_addr += rhs; }
+
     bool is_l1_table_aligned() const { return (m_addr & 0x3fff) == 0; }
     bool is_l2_table_aligned() const { return (m_addr & 0x400) == 0; }
 
@@ -43,6 +45,8 @@ public:
     bool operator!=(const VirtualAddress& rhs) { return m_addr != rhs.m_addr; }
     bool operator>(const VirtualAddress& rhs) { return m_addr > rhs.m_addr; }
     bool operator<(const VirtualAddress& rhs) { return m_addr < rhs.m_addr; }
+
+    bool operator+=(const uint32_t& rhs) { return m_addr += rhs; }
 
     bool is_l1_table_aligned() const { return (m_addr & 0x3fff) == 0; }
     bool is_l2_table_aligned() const { return (m_addr & 0x400) == 0; }
