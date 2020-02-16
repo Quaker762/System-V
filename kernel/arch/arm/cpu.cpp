@@ -5,6 +5,7 @@
 #include <kernel/arch/arm/gic.h>
 #include <kernel/irqhandler.h>
 #include <kernel/kstdlib/kstdio.h>
+#include <kernel/scheduler.h>
 
 static IRQHandler* irq_handlers[256];
 
@@ -43,13 +44,14 @@ void remove_handler(uint8_t irq)
     uint32_t far = CPU::get_FAR();
 
     //TODO: We need to check whether or not this occured in Kernel Mode or User Mode
-    kprintf("r0:  0x%x r1: 0x%x r2:   0x%x r3: 0x%x\n", regs.r0, regs.r1, regs.r2, regs.r3);
-    kprintf("r4:  0x%x r5: 0x%x r6:   0x%x r7: 0x%x\n", regs.r4, regs.r5, regs.r6, regs.r7);
-    kprintf("r8:  0x%x r9: 0x%x r10:  0x%x fp: 0x%x\n", regs.r8, regs.r9, regs.r10, regs.fp);
-    kprintf("r12: 0x%x lr: 0x%x spsr: 0x%x\n", regs.r12, regs.lr, regs.spsr);
+    kprintf("r0:  0x%x r1: 0x%x r2:   0x%x r3:   0x%x\n", regs.r0, regs.r1, regs.r2, regs.r3);
+    kprintf("r4:  0x%x r5: 0x%x r6:   0x%x r7:   0x%x\n", regs.r4, regs.r5, regs.r6, regs.r7);
+    kprintf("r8:  0x%x r9: 0x%x r10:  0x%x fp:   0x%x\n", regs.r8, regs.r9, regs.r10, regs.fp);
+    kprintf("r12: 0x%x lr: 0x%x sp:   0x%x spsr: 0x%x\n", regs.r12, regs.lr, regs.sp, regs.spsr);
     kprintf("DFSR: 0x%x IFSR: 0x%x\n", dfsr, ifsr);
     kprintf("DFAR: 0x%x IFAR: 0x%x\n", dfar, ifar);
     kprintf("FAR:  0x%x\n", far);
+    kprintf("pid = %d\n", current_proc->pid());
     kprintf("Kernel Panic: ");
     switch(type)
     {
@@ -74,6 +76,9 @@ void remove_handler(uint8_t irq)
         default:
             break;
     }
+
+    if(!current_proc)
+        kprintf("current == nullptr!! What the fuck!?\n");
 
     cli();
     kprintf("System halted\n");
