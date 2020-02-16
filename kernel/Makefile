@@ -25,6 +25,7 @@ CXX_OBJS = \
 	mem/virtmem.o \
 	irqhandler.o \
 	process.o \
+	scheduler.o \
 	init.o
 
 ASM=arm-none-eabi-as
@@ -40,7 +41,7 @@ CXXFLAGS += -MP -MMD
 CXXFLAGS += -I./
 CXXFLAGS += -I../
 CXXFLAGS += -DKERNEL
-ASFLAGS +=
+ASFLAGS += -march=armv7ve -mcpu=cortex-a15
 LDFLAGS += -T linker.ld -nostdlib
 
 DEP = $(CXX_OBJS:%.o=%.d)

@@ -4,6 +4,7 @@
 #include <kernel/assertions.h>
 #include <kernel/device/timer.h>
 #include <kernel/kstdlib/kstdio.h>
+#include <kernel/scheduler.h>
 
 #define TIMER_DEBUG
 
@@ -72,10 +73,11 @@ void Timer::disable()
     unset_control_bit(TimerControlBits::ENABLE);
 }
 
-void Timer::handle_irq(RegisterDump&)
+void Timer::handle_irq(RegisterDump& regs)
 {
-    kprintf("Tick! 0x%x\n");
     register_write(TIMER_INT_CLR, 0xffffffff);
+
+    Scheduler::task_switch(regs);
 }
 
 ////////////////////////////////////////////////////////////////////////
