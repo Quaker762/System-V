@@ -4,6 +4,7 @@
 #pragma once
 
 #include <kernel/arch/arm/cpu.h>
+#include <kernel/types.h>
 #include <mjlib/extra.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -29,7 +30,7 @@ public:
     ~Process();
 
     const RegisterDump& registers();
-    uint32_t pid();
+    pid_t pid();
 
     const Process* next() const;
     void set_next(Process*);
@@ -38,6 +39,6 @@ private:
     uint32_t m_kstack[PROC_STACK_SIZE]; // uint32_t for alignment!
     PrivilegeMode m_privilege;
     Process* m_next;
-    uint32_t m_pid;
+    pid_t m_pid;
     RegisterDump m_registers;
 };
