@@ -25,7 +25,7 @@ void kmalloc_init()
     kprintf("kmalloc initialized! __KMALLOC_BASE @ 0x%x\n", &__KMALLOC_BASE);
 #endif
     kmalloc_ptr = reinterpret_cast<void*>(&__KMALLOC_BASE);
-    kmalloc_permanent_ptr = reinterpret_cast<void*>(&__KMALLOC_BASE + kmalloc_size);
+    kmalloc_permanent_ptr = reinterpret_cast<void*>(reinterpret_cast<uint32_t>(&__KMALLOC_BASE) + kmalloc_size);
     heap_list_init(kmalloc_ptr);
 }
 
