@@ -14,7 +14,7 @@ class VirtMemoryManager
 {
     OBJ_PERMANENT
 public:
-    VirtMemoryManager() {}
+    VirtMemoryManager();
 
     inline void switch_L1_translation_table(L1TranslationTable* table)
     {
