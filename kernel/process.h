@@ -28,8 +28,16 @@ public:
     Process(PrivilegeMode, proc_fn);
     ~Process();
 
+    const RegisterDump& registers();
+    uint32_t pid();
+
+    const Process* next() const;
+    void set_next(Process*);
+
 private:
     uint32_t m_kstack[PROC_STACK_SIZE]; // uint32_t for alignment!
-    PrivilegeMode m_privilege { KERNEL_MODE };
+    PrivilegeMode m_privilege;
     Process* m_next;
+    uint32_t m_pid;
+    RegisterDump m_registers;
 };
