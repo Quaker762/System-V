@@ -18,6 +18,12 @@
 
 #include <stdint.h>
 
+static constexpr uintptr_t GIC_BASE = 0x2c000000;
+static constexpr uintptr_t GIC_DIST_BASE = 0x2c001000;
+static constexpr uintptr_t GIC_CPU_BASE = 0x2c002000;
+static constexpr uint16_t GIC_SIZE = 0x8000; // 32KiB of space
+static constexpr uint16_t GIC_CPU_INTERFACE_OFFSET = 0x2000;
+
 namespace GIC
 {
 void initialize();

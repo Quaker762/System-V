@@ -6,12 +6,6 @@
 
 //#define GIC_DEBUG
 
-static constexpr uintptr_t GIC_BASE = 0x2c000000;
-static constexpr uintptr_t GIC_DIST_BASE = 0x2c001000;
-static constexpr uintptr_t GIC_CPU_BASE = 0x2c002000;
-static constexpr uint16_t GIC_SIZE = 0x8000; // 32KiB of space
-static constexpr uint16_t GIC_CPU_INTERFACE_OFFSET = 0x2000;
-
 // CPU Interface Register offsets
 static constexpr uint16_t GICC_CTLR = 0x000;
 static constexpr uint16_t GICC_PMR = 0x004;
