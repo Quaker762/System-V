@@ -9,6 +9,8 @@
 
 static pid_t GLOBAL_PID = 0;
 
+extern MJ::CircularLinkedList<Process> g_proc_list;
+
 Process* Process::spawn_kernel_process(const char*, proc_fn entry)
 {
     return new Process(PrivilegeMode::KERNEL_MODE, entry);
@@ -37,12 +39,10 @@ Process::Process(PrivilegeMode priv, proc_fn entry)
     m_registers.lr = reinterpret_cast<uint32_t>(entry);
     m_registers.sp = reinterpret_cast<uint32_t>(&m_kstack) + PROC_STACK_SIZE;
 
-    proc_list_tail->m_next = this;
-    proc_list_tail = this;
-    m_next = proc_list_head;
-
     kprintf("process: creating a new process with entry point 0x%x (this=0x%x)\n", entry, this);
     kprintf("process: m_kstack base @ 0x%x, top = 0x%x\n", m_kstack, m_registers.sp);
+
+    g_proc_list.append(this);
 }
 
 const RegisterDump& Process::registers()
@@ -53,14 +53,4 @@ const RegisterDump& Process::registers()
 uint32_t Process::pid()
 {
     return m_pid;
-}
-
-const Process* Process::next() const
-{
-    return m_next;
-}
-
-void Process::set_next(Process* proc)
-{
-    m_next = proc;
 }

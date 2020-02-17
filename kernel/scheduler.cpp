@@ -12,15 +12,14 @@
 Process* current_proc;
 static Process* s_proc0; // This is the idle kernel process
 
-Process* proc_list_head;
-Process* proc_list_tail;
+MJ::CircularLinkedList<Process> g_proc_list;
 
 void Scheduler::initialise()
 {
     current_proc = nullptr;
 
     s_proc0 = Process::spawn_kernel_process("kernel", nullptr);
-    proc_list_head = s_proc0;
+    g_proc_list.append(s_proc0);
 }
 
 void Scheduler::task_switch(RegisterDump& context)
