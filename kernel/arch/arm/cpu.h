@@ -99,11 +99,12 @@ private:
 extern "C" void relocate_vector_table();
 extern "C" void* vector_table;
 
-static constexpr uint32_t ENTIRES_PER_L2_TRANSLATION_TABLE = 256;
-static constexpr uint32_t ENTIRES_PER_L1_TRANSLATION_TABLE = 4096;
+static constexpr uint32_t ENTRIES_PER_L2_TRANSLATION_TABLE = 256;
+static constexpr uint32_t ENTRIES_PER_L1_TRANSLATION_TABLE = 4096;
 static constexpr uint32_t PAGE_SIZE = 4096;
 
-union L1TableEntry {
+union L1TableEntry
+{
     struct
     {
         uint32_t always_1 : 1;
@@ -118,7 +119,8 @@ union L1TableEntry {
     uint32_t entry;
 };
 
-union L2TableEntry {
+union L2TableEntry
+{
     struct
     {
         uint32_t xn : 1;
@@ -137,10 +139,10 @@ union L2TableEntry {
 
 struct L2TranslationTable
 {
-    L2TableEntry entries[ENTIRES_PER_L2_TRANSLATION_TABLE];
+    L2TableEntry entries[ENTRIES_PER_L2_TRANSLATION_TABLE];
 };
 
 struct L1TranslationTable
 {
-    L1TableEntry entries[ENTIRES_PER_L1_TRANSLATION_TABLE];
+    L1TableEntry entries[ENTRIES_PER_L1_TRANSLATION_TABLE];
 };
