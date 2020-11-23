@@ -42,6 +42,10 @@ SECTIONS {
         *(.bss.COMMON)
     }
 
+    .= ALIGN(16K)
+    __KERNEL_PAGE_DIRECTORY = .;
+    . += 0x1000; /* Increment by one full page */
+
     . = ALIGN(4K);
     __KERNEL_STACK_BASE = .;
     . += 0x8000;
