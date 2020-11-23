@@ -11,26 +11,35 @@ namespace MJ
 template<typename T>
 class LinkedList
 {
+private:
+    struct Node
+    {
+        explicit Node(const T& value)
+        : m_value(value) {}
+        T m_value;
+        Node* next;
+    };
+
 public:
     LinkedList() {};
 
     inline bool empty() { return m_head == nullptr; }
-    inline bool contains(T*);
-    inline void insert(T*);
-    inline void remove(T*);
+    inline bool contains(T&);
+    inline void insert(T&);
+    inline void remove(T&);
     inline T* take();
 
 private:
-    T* m_head { nullptr };
-    T* m_tail { nullptr };
+    Node* m_head { nullptr };
+    Node* m_tail { nullptr };
 };
 
 template<typename T>
-inline bool LinkedList<T>::contains(T* value)
+inline bool LinkedList<T>::contains(T& value)
 {
     for(T* node = m_head; node; node = node->next)
     {
-        if(node == value)
+        if(node->data == value)
             return true;
     }
 
@@ -38,8 +47,10 @@ inline bool LinkedList<T>::contains(T* value)
 }
 
 template<typename T>
-inline void LinkedList<T>::insert(T* node)
+inline void LinkedList<T>::insert(T& data)
 {
+    Node* node = new Node(data);
+
     if(m_head == nullptr)
     {
         m_head = node;
@@ -53,7 +64,7 @@ inline void LinkedList<T>::insert(T* node)
 }
 
 template<typename T>
-inline void LinkedList<T>::remove(T* find)
+inline void LinkedList<T>::remove(T& find)
 {
     if(find == m_head)
     {
@@ -86,10 +97,10 @@ inline T* LinkedList<T>::take()
     if(!m_head)
         return nullptr;
 
-    T* node = m_head;
+    Node* node = m_head;
     m_head = m_head->next;
 
-    return node;
+    return &node->m_value;
 }
 
 } // namespace MJ
