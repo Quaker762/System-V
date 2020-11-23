@@ -21,6 +21,7 @@ CXX_OBJS = \
 	fs/filedescription.o \
 	mem/heap/blocklist.o \
 	mem/heap/heap.o \
+	mem/vm/physpage.o \
 	mem/physmem.o \
 	mem/virtmem.o \
 	irqhandler.o \

@@ -1,25 +1,7 @@
 {
-  "env": {
-    "myDefaultIncludePath": [
-      "${workspaceFolder}",
-      "${workspaceFolder}/kernel/"
-    ],
-  },
-  "configurations": [
-    {
-      "includePath": [
-        "${workspaceFolder}",
-        "${workspaceFolder}/kernel/"
-      ],
-      "cppStandard": "c++14",
-      "browse": {}
-    }
-  ],
-  "version": 4,
-  "files.associations": {
-    "random": "cpp",
-    "limits": "cpp"
-  },
-  "clang-format.executable": "/usr/bin/clang-format",
-  "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "C_Cpp.intelliSenseEngineFallback": "Disabled",
+    "C_Cpp.default.includePath": [
+        "/home/quaker/Programming/OS/System-V/"
+    ]
 }
