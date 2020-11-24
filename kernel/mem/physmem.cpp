@@ -16,7 +16,7 @@ static PhysicalMemoryManager* m_instance;
 
 #define PMM_DEBUG
 
-PhysicalMemoryManager& PhysicalMemoryManager::obj_instance()
+PhysicalMemoryManager& PhysicalMemoryManager::instance()
 {
     return *m_instance;
 }
@@ -85,26 +85,25 @@ void PhysicalMemoryManager::init()
     kprintf("pmm: Intialised with %d free pages\n", m_free_pages);
 }
 
-void* PhysicalMemoryManager::allocate_physical_page()
+PhysicalMemoryPage* PhysicalMemoryManager::allocate_physical_page()
 {
     uint32_t bit = find_first_free_bit();
     bitmap_set_bit(bit);
 
-    void* block = reinterpret_cast<void*>(reinterpret_cast<uint32_t>(&__RAM_START) + (bit * PMM_BLOCK_SIZE));
+    PhysicalMemoryPage* page = PhysicalMemoryPage::create(PhysicalAddress(reinterpret_cast<uint32_t>(&__RAM_START) + (bit * PMM_BLOCK_SIZE)), PhysicalMemoryPage::Granularity::PAGE4K, true);
 
 #ifdef PMM_DEBUG
-    kprintf("pmm: found a free block at 0x%x\n", block);
+    kprintf("pmm: found a free block at 0x%x\n", page->paddr().get());
 #endif
 
     m_used_pages--;
     m_used_pages++;
-    return block;
+    return page;
 }
 
-void PhysicalMemoryManager::free_page(void* ptr)
+void PhysicalMemoryManager::free_page(PhysicalMemoryPage& page)
 {
-    PhysicalAddress paddr(reinterpret_cast<uint32_t>(ptr));
-    int frame = paddr.get() / PMM_BLOCK_SIZE;
+    int frame = page.paddr().get() / PMM_BLOCK_SIZE;
 
 #ifdef PMM_DEBUG
     kprintf("pmm: freeing frame 0x%x\n", frame);
@@ -115,25 +114,25 @@ void PhysicalMemoryManager::free_page(void* ptr)
     m_used_pages--;
 }
 
-void* PhysicalMemoryManager::allocate_16kb_aligned_page()
+PhysicalMemoryPage* PhysicalMemoryManager::allocate_16kb_aligned_page()
 {
     uint32_t bit = find_16k_aligned_bit();
     bitmap_set_bit(bit);
 
-    void* block = reinterpret_cast<void*>(reinterpret_cast<uint32_t>(&__RAM_START) + (bit * PMM_BLOCK_SIZE));
+    PhysicalMemoryPage* page = PhysicalMemoryPage::create(PhysicalAddress(reinterpret_cast<uint32_t>(&__RAM_START) + (bit * PMM_BLOCK_SIZE)), PhysicalMemoryPage::Granularity::PAGE4K, true);
 
-    ASSERT((reinterpret_cast<uint32_t>(block) & 0x3fff) == 0);
+    ASSERT((page->paddr().get() & 0x3fff) == 0);
 
 #ifdef PMM_DEBUG
-    kprintf("pmm: found a free block at 0x%x\n", block);
+    kprintf("pmm: found a free block at 0x%x\n", page->paddr().get());
 #endif
 
     m_free_pages--;
     m_used_pages++;
-    return block;
+    return page;
 }
 
-void* PhysicalMemoryManager::allocate_1k_page()
+PhysicalMemoryPage* PhysicalMemoryManager::allocate_1k_page()
 {
     // Let's make some pages!
     if(page_list_1k.empty())
@@ -141,18 +140,18 @@ void* PhysicalMemoryManager::allocate_1k_page()
 #ifdef PMM_DEBUG
         kprintf("pmm: no 1k pages available!\n");
 #endif
-        void* full_page = allocate_physical_page();
+        PhysicalMemoryPage* page4k = allocate_physical_page();
         for(uint32_t i = 0; i < PMM_BLOCK_SIZE; i += PMM_PAGE_SIZE_1K)
         {
 #ifdef PMM_DEBUG
-            kprintf("pmm: creating 1k page @ 0x%x\n", (reinterpret_cast<uint8_t*>(full_page) + i));
+            kprintf("pmm: creating 1k page @ 0x%x\n", (reinterpret_cast<uint8_t*>(page4k->paddr().get()) + i));
 #endif
-            Page1k* page = reinterpret_cast<Page1k*>(reinterpret_cast<uint8_t*>(full_page) + i);
+            PhysicalMemoryPage& page = *PhysicalMemoryPage::create(PhysicalAddress(page4k->paddr().get() + i), PhysicalMemoryPage::Granularity::PAGE1K, true);
             page_list_1k.insert(page);
         }
     }
 
-    Page1k* page = page_list_1k.take();
+    PhysicalMemoryPage* page = page_list_1k.take();
 #ifdef PMM_DEBUG
     kprintf("pmm: taking 1k page @ 0x%x\n", page);
 #endif
@@ -162,15 +161,13 @@ void* PhysicalMemoryManager::allocate_1k_page()
 
 // Note: There's currently no way to reclaim a 4k page (and thus free it) if all
 // of the 1k pages are free. Once 4 1k pages are created, they are permanently 1k pages!
-void PhysicalMemoryManager::free_1k_page(void* ptr)
+void PhysicalMemoryManager::free_1k_page(PhysicalMemoryPage& page)
 {
-    PhysicalAddress addr = PhysicalAddress(reinterpret_cast<uint32_t>(ptr));
-
 #ifdef PMM_DEBUG
-    kprintf("pmm: freeing 1k page @ 0x%x\n", addr.get());
+    kprintf("pmm: freeing 1k page @ 0x%x\n", page.paddr().get());
 #endif
 
-    page_list_1k.insert(reinterpret_cast<Page1k*>(addr.get()));
+    page_list_1k.insert(page);
 }
 
 void* PhysicalMemoryManager::allocate_region(PhysicalAddress base, size_t size)

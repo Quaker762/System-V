@@ -4,14 +4,12 @@
 #pragma once
 
 #include <kernel/mem/heap/heap.h>
+#include <kernel/mem/vm/physpage.h>
 #include <mjlib/linkedlist.h>
 #include <stddef.h>
 #include <stdint.h>
 
-struct Page1k
-{
-    Page1k* next;
-};
+class PhysicalMemoryPage;
 
 class PhysicalMemoryManager
 {
@@ -24,14 +22,14 @@ private:
 public:
     PhysicalMemoryManager();
 
-    void* allocate_physical_page();
-    void free_page(void*);
-    void* allocate_1k_page();
-    void free_1k_page(void*);
-    void* allocate_16kb_aligned_page();
+    PhysicalMemoryPage* allocate_physical_page();
+    void free_page(PhysicalMemoryPage&);
+    PhysicalMemoryPage* allocate_1k_page();
+    void free_1k_page(PhysicalMemoryPage&);
+    PhysicalMemoryPage* allocate_16kb_aligned_page();
     void* allocate_region(PhysicalAddress, size_t);
 
-    static PhysicalMemoryManager& obj_instance();
+    static PhysicalMemoryManager& instance();
 
 private:
     void init();
@@ -55,7 +53,8 @@ private:
     }
 
 private:
-    MJ::LinkedList<Page1k> page_list_1k;
+    MJ::LinkedList<PhysicalMemoryPage> page_list_1k;
+    MJ::LinkedList<PhysicalMemoryPage> page_list_4k;
     size_t m_free_pages { 0 };
     size_t m_used_pages { 0 };
     size_t m_free_bytes { 0 };
