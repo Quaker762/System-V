@@ -1,0 +1,4 @@
+{
+    "C_Cpp.clang_format_sortIncludes": true,
+    "editor.formatOnSave": true
+}
