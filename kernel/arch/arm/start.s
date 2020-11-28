@@ -11,8 +11,29 @@
 
 .global _start
 _start:
-    add r0, r0, #5
-    add r0, r0
-    
+    # Let's set up all the stacks for different modes!
+    msr cpsr, #0x93 // Set the CPU mode to SUPERVISOR, interrupts disabled
+    ldr sp, =__KERNEL_STACK_TOP
+
+    # Switch to ABORT mode
+    msr cpsr, #0x97 // Set CPU mode to ABORT, interrupts DISABLED
+    ldr sp, =__ABORT_STACK_TOP
+
+    # Switch to UNDEFINED mode
+    msr cpsr, #0x9B // Set CPU mode to ABORT, interrupts DISABLED
+    ldr sp, =__ABORT_STACK_TOP
+
+    # Switch to IRQ mode
+    msr cpsr, #0x92 // Set CPU mode to IRQ, interrupts DISABLED
+    ldr sp, =__IRQ_STACK_TOP
+
+    # Switch back to Supervisor (Kernel) mode with interrupts DISABLED
+    msr cpsr, #0x93
+
+    bl __cxa_global_constructors // Call global constructors
+    b init // Go to Kernel init
+
+# If we end up here, the kernel's returned!! (not good!)
 hang:
     b hang
+

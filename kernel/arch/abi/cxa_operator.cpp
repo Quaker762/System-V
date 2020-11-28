@@ -3,7 +3,7 @@
  *   
  */
 
-#include <kernel/mem/heap/heap.h>
+#include <kernel/memory/heap/heap.h>
 
 void* operator new(size_t alloc_size)
 {

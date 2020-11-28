@@ -3,6 +3,12 @@ AS_OBJS = \
     arch/arm/exception.o
 
 CXX_OBJS = \
+	arch/abi/cxa_global.o \
+	arch/abi/cxa_operator.o \
+	arch/abi/cxa_pure.o \
+	arch/arm/cpu.o \
+	memory/heap/blocklist.o \
+	memory/heap/heap.o \
     init.o
 
 ASM=arm-none-eabi-as
@@ -35,9 +41,9 @@ ELF_IMAGE : $(CXX_OBJS) $(AS_OBJS)
 	@echo "AS $@"; $(CC) $(ASFLAGS) -o $@ -c $<
 
 clean:
-	rm $(CXX_OBJS)
-	rm $(AS_OBJS)
-	rm $(DEP)
-	rm $(ELF_IMAGE)
+	rm -f $(CXX_OBJS)
+	rm -f $(AS_OBJS)
+	rm -f $(DEP)
+	rm -f $(ELF_IMAGE)
 
 -include $(DEP)
