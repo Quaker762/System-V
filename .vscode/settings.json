@@ -1,4 +1,7 @@
 {
     "C_Cpp.clang_format_sortIncludes": true,
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}"
+    ]
 }
