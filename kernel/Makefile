@@ -17,14 +17,14 @@ CXX=arm-none-eabi-g++
 LD=arm-none-eabi-ld
 
 CXXFLAGS += -std=c++14 -Wall -Wextra -Wold-style-cast
-CXXFLAGS += -ffreestanding -mcpu=cortex-a8
-CXXFLAGS += -O0 -g3
+CXXFLAGS += -ffreestanding -march=armv7ve
+CXXFLAGS += -O0 -g3 -ggdb
 CXXFLAGS += -fno-exceptions -fno-rtti -fno-stack-protector
 CXXFLAGS += -MP -MMD
 CXXFLAGS += -I./
 CXXFLAGS += -I../
 CXXFLAGS += -DKERNEL
-ASFLAGS += -mcpu=cortex-a8
+ASFLAGS += -march=armv7ve
 LDFLAGS += -T linker.ld -nostdlib
 
 DEP = $(CXX_OBJS:%.o=%.d)
