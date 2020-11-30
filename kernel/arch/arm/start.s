@@ -41,6 +41,9 @@
 .extern init
 .extern __cxa_global_constructors
 
+uart0_addr:
+    .long 0xd01f1000
+
 .global _start
 _start:
     # Let's set up all the stacks for different modes!
@@ -115,6 +118,32 @@ create_boot_page_directory:
     orr r1, $PAGE_DIRECTORY_ENTRY_TYPE
     str r1, [r0]
 
+map_peripherals:
+    /**
+     * Oh yeah, we also need to map the peripheral block so we can extract
+     * *some* kind of debug information from the kernel via the UART in the
+     * early stages of boot. We could *technically* do this in the Kernel itself,
+     * but there's a LOT of bootstrapping required that creates a chicken/egg debug
+     * scenario...
+     *
+     * On this board the peripheral block is located at physical address 0x10000000.
+     * It's 2MiB in length, so we'll map two 1MiB sections to 0xd0000000 (kernel
+     * virtual address space + 0x10000000)
+     *
+     * These entries reside at entries 0xd00 and 0xd01 in the Page Directory
+     */
+    eor r1, r1
+    mov r2, #(0xd00 * 4)
+    adds r1, #0x10000000
+    orr r1, $PAGE_DIRECTORY_ENTRY_PERMISSIONS
+    orr r1, $PAGE_DIRECTORY_ENTRY_TYPE
+    str r1, [r0, r2]
+
+    adds r1, #0x100000
+    adds r2, #4
+    str r1, [r0, r2]
+
+enable_mmu:
     /* Let's write the Level 1 table to the correct register and actually enable the MMU! */
     /* r0 contains boot page directory */
     mcr p15, #0, r0, c2, c0, #0 /* Write the table's physical address */
@@ -141,4 +170,3 @@ create_boot_page_directory:
 # If we end up here, the kernel's returned!! (not good!)
 hang:
     b hang
-
