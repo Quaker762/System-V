@@ -31,7 +31,7 @@ SECTIONS {
         *(.text.boot)
     }
 
-    . = ALIGN(4);
+    . = ALIGN(16K);
     __FREE_RAM_START = .;
 
     . = 0x8000000;
