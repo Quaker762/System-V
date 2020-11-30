@@ -55,3 +55,24 @@ struct RegisterDump
     uint32_t spsr;
     uint32_t r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, fp, r12, sp, lr;
 } __attribute__((packed));
+
+// A clever trick from Serenity OS.
+// This class is instantiated at the beginning of a function
+// that should have interrupts disabled. The constructor emits the
+// instruction "cpsid iaf", and the destructor emits "cpsie iaf", meaning
+// that when the function leaves scope (and hence the object is destroyed)
+// interrupts are automagically re-enabled without us having to
+// remember to do it ourselves!
+class InterruptDisabler final
+{
+public:
+    inline InterruptDisabler()
+    {
+        cli();
+    }
+
+    inline ~InterruptDisabler()
+    {
+        sti();
+    }
+};
