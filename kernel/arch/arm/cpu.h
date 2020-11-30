@@ -25,6 +25,8 @@
  */
 #pragma once
 
+#include <stdint.h>
+
 #define CAUSE_ILLEGAL_INSTRUCTION __asm__ volatile("bad:\n.word 0xffffffff\n")
 #define CAUSE_DATA_ABORT __asm__ volatile("mov r0,#0x00\nldr r0, [r0, #-4]")
 #define CAUSE_PREFETCH_ABORT __asm__ volatile("bkpt")
@@ -47,3 +49,9 @@ static inline void sti()
 {
     __asm__ volatile("cpsie iaf");
 }
+
+struct RegisterDump
+{
+    uint32_t spsr;
+    uint32_t r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, fp, r12, sp, lr;
+} __attribute__((packed));
