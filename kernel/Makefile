@@ -24,7 +24,7 @@ CXXFLAGS += -MP -MMD
 CXXFLAGS += -I./
 CXXFLAGS += -I../
 CXXFLAGS += -DKERNEL
-ASFLAGS += -march=armv7ve
+ASFLAGS += -march=armv7ve -g3
 LDFLAGS += -T linker.ld -nostdlib
 
 DEP = $(CXX_OBJS:%.o=%.d)
