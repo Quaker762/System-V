@@ -65,7 +65,7 @@ illegal_instruction_trampoline:
     mov r0, sp
 
     # Jump to the actual exception handler
-    //bl illegal_instruction_handler
+    bl illegal_instruction_handler
     add sp, sp, #4 // Ignore the value of SPSR we pushed onto the stack
     ldmfd sp, {r0-r12, sp, pc}^ // Return from exception
 
@@ -77,7 +77,7 @@ prefetch_abort_trampoline:
     mrs r0, spsr
     stmfd sp!, {r0}
     mov r0, sp
-    b .
+    b data_abort_handler
 
     # Jump to the actual exception handler
     //bl prefetch_abort_handler
@@ -94,7 +94,7 @@ data_abort_trampoline:
     stmfd sp!, {r0}
 
     # Jump to the actual exception handler
-    //bl data_abort_handler
+    bl data_abort_handler
     add sp, sp, #4 // Ignore the value of SPSR we pushed onto the stack
     ldmfd sp, {r0-r12, sp, pc}^ // Return from exception
 
@@ -113,6 +113,7 @@ irq_trampoline:
     # Jump to the C irq handler
     mov r0, sp
     //bl handle_irq
+    b .
 
     add sp, sp, #4
     ldmfd sp, {r0-r12, sp, pc}^
@@ -133,6 +134,7 @@ svc_trap:
     stmfd sp!, {r0}
 
     mov r0, sp
+    b .
     //bl syscall_handler
 
     add sp, sp, #4
