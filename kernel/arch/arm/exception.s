@@ -94,6 +94,7 @@ data_abort_trampoline:
     stmfd sp!, {r0}
 
     # Jump to the actual exception handler
+    mov r0, sp
     bl data_abort_handler
     add sp, sp, #4 // Ignore the value of SPSR we pushed onto the stack
     ldmfd sp, {r0-r12, sp, pc}^ // Return from exception
