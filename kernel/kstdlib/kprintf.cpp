@@ -23,12 +23,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 #include <common/assert.h>
-#include <kernel/device/uart.h>
+#include <kernel/device/uart/uart.h>
 #include <kernel/kstdlib/kstring.h>
-#include <mjlib/extra.h>
+#include <libc++/extra.h>
 #include <stdarg.h>
 
-static UART uart0(UART0_BASE);
+static UART uart0(UART::UART0_BASE);
 static constexpr const char* digits = "0123456789abcdef";
 
 [[gnu::always_inline]] inline static int kprintf_internal_hex(uint32_t number)

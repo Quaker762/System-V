@@ -7,6 +7,9 @@ CXX_OBJS = \
 	arch/abi/cxa_operator.o \
 	arch/abi/cxa_pure.o \
 	arch/arm/cpu.o \
+	device/uart/uart.o \
+	kstdlib/kstring.o \
+	kstdlib/kprintf.o \
 	memory/heap/blocklist.o \
 	memory/heap/heap.o \
     init.o

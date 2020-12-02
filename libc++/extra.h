@@ -22,18 +22,10 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#include <kstdlib/kstdio.h>
+#pragma once
 
-/*
- *  https://github.com/qemu/qemu/blob/master/hw/arm/versatilepb.c
- * 
- * Note: The -serial mon:stdio option for QEMU multiplexes the Monitor and Serial
- * port into stdio. To switch between them, type Ctrl+a, then 'c'.
- */
-extern "C" int init(void)
-{
-    kprintf("Hello, World!\n");
-    for(;;) {}
+#define UNUSED(expr) static_cast<void>(expr)
 
-    return 0;
-}
+#define KiB 1024
+#define MiB 1024 * 1024
+#define GiB 1024 * 1024 * 1024
