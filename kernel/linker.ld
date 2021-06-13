@@ -17,6 +17,14 @@ SECTIONS {
         end_of_kernel_text = .;
     }
 
+        . = ALIGN(4);
+        .init_array :
+        {
+            __preinit_array_start = .;
+            KEEP (*(.preinit_array*))
+            __preinit_array_end = .;
+        }
+
     . = ALIGN(4);
     .init_array :
     {
