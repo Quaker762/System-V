@@ -16,6 +16,8 @@
 #include <kernel/mem/physmem.h>
 #include <mjlib/linkedlist.h>
 
+#include <kernel/mem/vm/l1table.h>
+
 extern "C" void
 init()
 {

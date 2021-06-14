@@ -103,6 +103,27 @@ static constexpr uint32_t ENTRIES_PER_L2_TRANSLATION_TABLE = 256;
 static constexpr uint32_t ENTRIES_PER_L1_TRANSLATION_TABLE = 4096;
 static constexpr uint32_t PAGE_SIZE = 4096;
 
+class Level1TranslationTableEntry
+{
+public:
+    explicit Level1TranslationTableEntry(uint32_t* entry)
+        : m_entry(entry)
+    {
+        // TODO: Some kind of assertion check here
+    }
+
+    ~Level1TranslationTableEntry() = delete;
+
+    uint8_t domain() const { return (entry_as_uint() & 0x1E0) >> 5; }
+
+    uint32_t* entry() const { return m_entry; }
+    uint32_t entry_as_uint() const { return *m_entry; }
+
+private:
+    uint32_t* m_entry; // Pointer to actual entry
+};
+
+/**
 union L1TableEntry
 {
     struct
@@ -146,3 +167,5 @@ struct L1TranslationTable
 {
     L1TableEntry entries[ENTRIES_PER_L1_TRANSLATION_TABLE];
 };
+
+*/

@@ -72,7 +72,14 @@ SECTIONS {
     __IRQ_STACK_TOP = .;
 
     __KMALLOC_BASE = .;
-    . += 4M;
+    . += 8M;
+
+    . = ALIGN(16K);
+    __L1_TABLE_POOL_START = .;
+    . += 32M; /* 32MiB */
+    __L1_TABLE_POOL_END = .;
+
+    . = ALIGN(4K);
 
     __FREE_RAM_START = .;
 

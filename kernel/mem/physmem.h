@@ -20,16 +20,13 @@ private:
     static constexpr uint32_t PMM_REGION_FULL = 0xffffffff;
 
 public:
+    static PhysicalMemoryManager& instance();
+
+public:
     PhysicalMemoryManager();
 
-    PhysicalMemoryPage* allocate_physical_page();
-    void free_page(PhysicalMemoryPage&);
-    PhysicalMemoryPage* allocate_1k_page();
-    void free_1k_page(PhysicalMemoryPage&);
-    PhysicalMemoryPage* allocate_16kb_aligned_page();
     void* allocate_region(PhysicalAddress, size_t);
-
-    static PhysicalMemoryManager& instance();
+    PhysicalAddress allocate_l1_table(size_t index);
 
 private:
     void init();
@@ -37,17 +34,17 @@ private:
     uint32_t find_first_free_bit();
     uint32_t find_16k_aligned_bit();
 
-    inline void bitmap_set_bit(uint32_t bit)
+    void bitmap_set_bit(uint32_t bit)
     {
         m_bitmap[bit / 32] |= (1 << (bit % 32));
     }
 
-    inline void bitmap_clear_bit(uint32_t bit)
+    void bitmap_clear_bit(uint32_t bit)
     {
         m_bitmap[bit / 32] &= ~(1 << (bit % 32));
     }
 
-    inline bool bitmap_test_bit(uint32_t bit)
+    bool bitmap_test_bit(uint32_t bit)
     {
         return static_cast<bool>(m_bitmap[bit / 32] & (1 << (bit % 32)));
     }
@@ -58,5 +55,6 @@ private:
     size_t m_free_pages { 0 };
     size_t m_used_pages { 0 };
     size_t m_free_bytes { 0 };
+    size_t m_free_l1_tables { 0 };
     uint32_t* m_bitmap { nullptr };
 };

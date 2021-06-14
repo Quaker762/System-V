@@ -21,9 +21,9 @@ CXX_OBJS = \
 	fs/filedescription.o \
 	mem/heap/blocklist.o \
 	mem/heap/heap.o \
+	mem/vm/l1table.o \
 	mem/vm/physpage.o \
 	mem/physmem.o \
-	mem/virtmem.o \
 	irqhandler.o \
 	process.o \
 	scheduler.o \
@@ -59,9 +59,9 @@ ELF_IMAGE : $(CXX_OBJS) $(AS_OBJS)
 	@echo "AS $@"; $(CC) $(ASFLAGS) -o $@ -c $<
 
 clean:
-	rm $(CXX_OBJS)
-	rm $(AS_OBJS)
-	rm $(DEP)
-	rm $(ELF_IMAGE)
+	rm -rf $(CXX_OBJS)
+	rm -rf $(AS_OBJS)
+	rm -rf $(DEP)
+	rm -rf $(ELF_IMAGE)
 
 -include $(DEP)
