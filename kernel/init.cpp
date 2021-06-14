@@ -14,7 +14,6 @@
 #include <kernel/kstdlib/kstdio.h>
 #include <kernel/mem/address.h>
 #include <kernel/mem/physmem.h>
-#include <kernel/mem/virtmem.h>
 #include <mjlib/linkedlist.h>
 
 extern "C" void
