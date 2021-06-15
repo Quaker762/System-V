@@ -9,7 +9,7 @@
 
 static pid_t GLOBAL_PID = 0;
 
-extern MJ::CircularLinkedList<Process> g_proc_list;
+extern qtl::CircularLinkedList<Process> g_proc_list;
 
 Process* Process::spawn_kernel_process(const char*, proc_fn entry)
 {

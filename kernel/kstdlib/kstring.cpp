@@ -3,7 +3,7 @@
  */
 #include "kstring.h"
 
-#include <mjlib/extra.h>
+#include <qtl/extra.h>
 #include <stdint.h>
 
 // TODO: Optimise me with assembly please!

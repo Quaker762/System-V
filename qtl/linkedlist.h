@@ -5,7 +5,7 @@
 
 #define DEBUG_LL
 
-namespace MJ
+namespace qtl
 {
 
 template<typename T>
@@ -103,4 +103,4 @@ inline T* LinkedList<T>::take()
     return &node->m_value;
 }
 
-} // namespace MJ
+}

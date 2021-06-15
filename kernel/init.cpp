@@ -14,7 +14,7 @@
 #include <kernel/kstdlib/kstdio.h>
 #include <kernel/mem/address.h>
 #include <kernel/mem/physmem.h>
-#include <mjlib/linkedlist.h>
+#include <qtl/linkedlist.h>
 
 #include <kernel/mem/vm/l1table.h>
 

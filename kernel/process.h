@@ -5,17 +5,17 @@
 
 #include <kernel/arch/arm/cpu.h>
 #include <kernel/types.h>
-#include <mjlib/circularlinkedlist.h>
-#include <mjlib/extra.h>
+#include <qtl/circularlinkedlist.h>
+#include <qtl/extra.h>
 #include <stddef.h>
 #include <stdint.h>
 
 static constexpr size_t PROC_STACK_SIZE = (4 * KiB) / sizeof(uint32_t);
 typedef void (*proc_fn)();
 
-class Process : public MJ::CircularLinkedListNode<Process>
+class Process : public qtl::CircularLinkedListNode<Process>
 {
-    friend class MJ::CircularLinkedListNode<Process>;
+    friend class qtl::CircularLinkedListNode<Process>;
 
 public:
     enum PrivilegeMode

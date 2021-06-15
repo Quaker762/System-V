@@ -5,7 +5,7 @@
 
 #include <kernel/mem/heap/heap.h>
 #include <kernel/mem/vm/physpage.h>
-#include <mjlib/linkedlist.h>
+#include <qtl/linkedlist.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -50,8 +50,8 @@ private:
     }
 
 private:
-    MJ::LinkedList<PhysicalMemoryPage> page_list_1k;
-    MJ::LinkedList<PhysicalMemoryPage> page_list_4k;
+    qtl::LinkedList<PhysicalMemoryPage> page_list_1k;
+    qtl::LinkedList<PhysicalMemoryPage> page_list_4k;
     size_t m_free_pages { 0 };
     size_t m_used_pages { 0 };
     size_t m_free_bytes { 0 };

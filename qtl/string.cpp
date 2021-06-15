@@ -1,6 +1,6 @@
 #include "string.h"
 
-namespace MJ
+namespace qtl
 {
 
 String::String(const char* cstring)
@@ -20,4 +20,4 @@ String::String(const char* cstring, size_t length)
         m_characters[i] = *(cstring + i);
     }
 }
-} // namespace MJ
+}

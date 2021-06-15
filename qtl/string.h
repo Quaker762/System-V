@@ -1,6 +1,6 @@
 #include <stddef.h>
 
-namespace MJ
+namespace qtl
 {
 
 class String
@@ -17,4 +17,4 @@ public:
 private:
     char m_characters[256];
 };
-} // namespace MJ
+}

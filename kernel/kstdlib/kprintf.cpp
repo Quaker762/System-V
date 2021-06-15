@@ -4,7 +4,7 @@
 #include <common/assert.h>
 #include <kernel/device/uart.h>
 #include <kernel/kstdlib/kstring.h>
-#include <mjlib/extra.h>
+#include <qtl/extra.h>
 #include <stdarg.h>
 
 static UART uart0(UART0_BASE);

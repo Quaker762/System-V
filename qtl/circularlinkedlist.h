@@ -3,7 +3,7 @@
  */
 #pragma once
 
-namespace MJ
+namespace qtl
 {
 template<typename T>
 class CircularLinkedListNode
@@ -56,4 +56,4 @@ inline void CircularLinkedList<T>::append(T* node)
     m_tail->set_next(m_head);
 }
 
-} // namespace MJ
+}

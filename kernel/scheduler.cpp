@@ -12,7 +12,7 @@
 Process* current_proc;
 static Process* s_proc0; // This is the idle kernel process
 
-MJ::CircularLinkedList<Process> g_proc_list;
+qtl::CircularLinkedList<Process> g_proc_list;
 
 void Scheduler::initialise()
 {
