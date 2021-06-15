@@ -33,7 +33,7 @@ vector_table:
 relocate_vector_table:
     ldr r0, =vector_table
     stmfd sp!, {r0-r12, lr}
-    bl set_VBAR
+    bl set_vbar
     ldmfd sp!, {r0-r12, pc}^
     bx lr
 

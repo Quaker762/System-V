@@ -37,7 +37,7 @@ static inline void set_SCTLR(uint32_t reg)
 namespace CPU
 {
 
-void set_DACR_by_domain(Domain domain, DACRValue access_type)
+void set_dacr_by_domain(Domain domain, DACRValue access_type)
 {
     uint32_t reg = get_DACR();
     uint32_t mask = static_cast<uint32_t>(domain) & static_cast<uint32_t>(access_type);
@@ -48,7 +48,7 @@ void set_DACR_by_domain(Domain domain, DACRValue access_type)
     set_DACR(reg);
 }
 
-void set_SCTLR_flag(SCTLRFlag flag)
+void set_sctlr_flag(SCTLRFlag flag)
 {
     uint32_t reg = get_SCTLR();
 
@@ -57,7 +57,7 @@ void set_SCTLR_flag(SCTLRFlag flag)
     set_SCTLR(reg);
 }
 
-void unset_SCTLR_flag(SCTLRFlag flag)
+void unset_sctlr_flag(SCTLRFlag flag)
 {
     uint32_t reg = get_SCTLR();
 
@@ -66,7 +66,7 @@ void unset_SCTLR_flag(SCTLRFlag flag)
     set_SCTLR(reg);
 }
 
-bool get_SCTLR_flag(SCTLRFlag flag)
+bool get_sctlr_flag(SCTLRFlag flag)
 {
     uint32_t reg = get_SCTLR();
 
@@ -76,7 +76,7 @@ bool get_SCTLR_flag(SCTLRFlag flag)
     return true;
 }
 
-void set_VBAR(uint32_t address)
+void set_vbar(uint32_t address)
 {
     __asm__ volatile("mcr p15, 0, %[value], c12, c0, 0"
                      :
